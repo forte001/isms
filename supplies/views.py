@@ -8,7 +8,8 @@ from django.views import generic
 
 
 class indexView(generic.ListView):
-    template_name = "supplies/supplies.html"
+    template_name = "supplies/index.html"
+    context_object_name = 'items'
 
 
     def get_queryset(self):

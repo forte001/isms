@@ -1,0 +1,151 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #4A90E2; /* Beautiful blue color */
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #FFCC00; /* Highlight color */
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-box {
+    display: flex;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    width: 70%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-box button {
+    padding: 10px 15px;
+    background-color: #4A90E2; /* Match sidebar color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+.search-box button:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+}
+
+.user-profile {
+    position: relative;
+}
+
+#profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px; /* Adjust based on header height */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f4f8; /* Light hover effect */
+}
+
+.main-content {
+    margin-top: 20px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+}
+
+.item-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.item-table th, .item-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.item-table th {
+    background-color: #4A90E2; /* Green */
+    color: white;
+}
+
+.item-table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey */
+}
+
+.item-table tr:hover {
+    background-color: #ddd; /* Darker grey */
+}
+
+.item-table td {
+    border: 1px solid #ddd; /* Border */
+}
