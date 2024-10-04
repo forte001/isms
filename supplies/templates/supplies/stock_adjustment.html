@@ -1,0 +1,24 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+{% block title %} Adjust Stock {% endblock %}
+{% block content %}
+<h2>Adjust Stock</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="product">Product:</label>
+        <select name="product_id" required>
+            {% for product in products %}
+            <option value="{{ product.id }}">{{ product.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="quantity_adjusted">Quantity Adjusted:</label>
+        <input type="number" name="quantity_adjusted" required>
+        <br>
+        <label for="reason">Reason:</label>
+        <textarea name="reason" required></textarea>
+        <br>
+        <button type="submit">Adjust Stock</button>
+    </form>
+
+{% endblock %}

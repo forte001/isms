@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, ItemCategory
+from .models import Product, Category
 
 # class ItemCategoryInLine(admin.TabularInline):
 #     model = ItemCategory
@@ -18,8 +18,8 @@ from .models import Item, ItemCategory
 
 
 # Register your models here.
-admin.site.register([Item,
-                      ItemCategory
+admin.site.register([Product,
+                      Category
                       
                       
                       ])

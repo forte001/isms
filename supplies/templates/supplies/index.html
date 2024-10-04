@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}My Home{% endblock %}
 {% block content %}
-<h2>Items</h2>
+<h2>Products</h2>
 <div class="container">
     <table class="item-table">
         <thead>
@@ -17,11 +17,11 @@
         <tbody>
             {% for item in items %}
             <tr>
-                <td>{{ item.id }}</td>
+                <!-- <td>{{ item.id }}</td>
                 <td>{{ item.item_name }}</td>
                 <td>{{ item.item_category }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>{{ item.created_by }}</td>
+                <td>{{ item.created_by }}</td> -->
             </tr>
             {% endfor %}
         </tbody>

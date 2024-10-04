@@ -1,0 +1,33 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+{% block title %}Product list{% endblock %}
+{% block content %}
+<h2>Product List</h2>
+<div class="container">
+    <table class="item-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Stock Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.stock_quantity }}</td>
+            <td>
+                <a href="{% url 'product_detail' product.id %}">View Details</a> |
+                <a href="{% url 'create_sale' %}?product_id={{ product.id }}">Create Sale</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
