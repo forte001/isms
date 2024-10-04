@@ -8,7 +8,7 @@
         <label for="product">Product:</label>
         <select name="product_id" required>
             {% for product in products %}
-            <option value="{{ product.id }}">{{ product.name }}</option>
+            <option value="{{ product.id }}">{{ product.product_name }}</option>
             {% endfor %}
         </select>
         <br>

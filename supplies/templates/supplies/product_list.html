@@ -29,5 +29,7 @@
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'supplies:adjust_stock' %}">Adjust Stock</a>
+<a href="{% url 'supplies:low_stock_alerts' %}">Low Stock Alerts</a>
 
 {% endblock %}

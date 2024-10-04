@@ -13,10 +13,10 @@
         <div class="sidebar">
             <h2>Inventory Manager</h2>
             <ul>
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="products/">Products</a></li>
-                <li><a href="supplier/">Suppliers</a></li>
-                <li><a href="customer/">Customers</a></li>
+                <li><a href="{% url 'supplies:index' %}">Dashboard</a></li>
+                <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
+                <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
+                <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
                 <li><a href="#">Logout</a></li>
             </ul>
         </div>

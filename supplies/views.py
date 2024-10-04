@@ -53,11 +53,11 @@ from .models import Customer
 
 def customer_list(request):
     customers = Customer.objects.all()
-    return render(request, 'customer_list.html', {'customers': customers})
+    return render(request, 'supplies/customer_list.html', {'customers': customers})
 
 def supplier_list(request):
     suppliers = Supplier.objects.all()
-    return render(request, 'supplier_list.html', {'suppliers': suppliers})
+    return render(request, 'suppliers/supplier_list.html', {'suppliers': suppliers})
 
 def adjust_stock(request):
     if request.method == 'POST':
@@ -84,3 +84,5 @@ def low_stock_alerts(request):
     threshold = 10  # Define your low stock threshold
     low_stock_products = Product.objects.filter(stock_quantity__lt=threshold)
     return render(request, 'supplies/low_stock_alerts.html', {'low_stock_products': low_stock_products})
+
+
