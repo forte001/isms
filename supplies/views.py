@@ -16,7 +16,6 @@ class indexView(generic.ListView):
     def get_queryset(self):
         return Product.objects.all()
 
-        # return HttpResponse("Welcome to the Inventory Manager! ")
 
 def product_list(request):
     products = Product.objects.all()
