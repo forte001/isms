@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from datetime import datetime
+from django.utils import timezone
 from .models import Product, Category, Supplier, Customer, Sale, StockAdjustment
 
 
@@ -45,16 +45,15 @@ class SaleModelTest(TestCase):
     def test_str(self):
         self.assertEqual(str(self.sale), f'Sale of {self.sale.quantity} x {self.sale.product.product_name} to {self.customer.customer_first_name} {self.customer.customer_last_name}')
 
-# class StockAdjustmentModelTest(TestCase):
-#     def setUp(self):
-#         self.user = User.objects.create_user(username='testuser', password='testpass')
-#         self.date = datetime.now()
-#         self.category = Category.objects.create(cat_name='Electronics', created_by=self.user)
-#         self.supplier = Supplier.objects.create(supplier_name='Supplier A', supplier_email='contact@supplier.com', supplier_phone='+2347086497348')
-#         self.product = Product.objects.create(product_name='Test Product', category=self.category, supplier=self.supplier, price=100.0)
-#         self.adjustment = StockAdjustment.objects.create(product=self.product, quantity_adjusted=5, reason='quantity low')
+class StockAdjustmentModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.category = Category.objects.create(cat_name='Electronics', created_by=self.user)
+        self.supplier = Supplier.objects.create(supplier_name='Supplier A', supplier_email='contact@supplier.com', supplier_phone='+2347086497348')
+        self.product = Product.objects.create(product_name='Test Product', category=self.category, supplier=self.supplier, price=100.0)
+        self.adjustment = StockAdjustment.objects.create(product=self.product, quantity_adjusted=5, reason='quantity low')
 
-#     def test_str(self):
-#         self.assertEqual(str(self.adjustment), f'{self.adjustment.quantity_adjusted} of {self.adjustment.product.product_name} - {self.adjustment.reason} on {self.date}')
+    def test_str(self):
+        self.assertEqual(str(self.adjustment), f'{self.adjustment.quantity_adjusted} of {self.adjustment.product.product_name} - {self.adjustment.reason} on {self.adjustment.date}')
 
 
