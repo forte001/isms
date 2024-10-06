@@ -4,11 +4,21 @@ from django.utils import timezone
 from .models import Product, Category, Supplier, Customer, Sale, StockAdjustment
 
 
+### Base Test Case available universally to other portion of the test code for use
+class BaseTestCase(TestCase):
+
+    """ This portion of code for the user
+    make it the user available to other portion of 
+    the test code for use, thereby avoiding unnecessary repetition
+    """
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+
 ### Model Tests 
-class CategoryModelTest(TestCase):
+class CategoryModelTest(BaseTestCase):
     def setUp(self):
     # Create test user
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        super().setUp() 
     def test_str(self):
         category = Category.objects.create(cat_name='Electronics', created_by=self.user)
         self.assertEqual(str(category), 'Electronics')
@@ -23,9 +33,9 @@ class CustomerModelTest(TestCase):
         customer = Customer.objects.create(customer_first_name='John', customer_last_name='Doe', customer_email='johndoe@company.com', customer_phone='+233807487487')
         self.assertEqual(str(customer), 'John'+ ' Doe')
 
-class ProductModelTest(TestCase):
+class ProductModelTest(BaseTestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        super().setUp()
         self.category = Category.objects.create(cat_name='Electronics', created_by=self.user)
         self.supplier = Supplier.objects.create(supplier_name='Supplier A', supplier_email='contact@supplier.com', supplier_phone='+2347086497348')
         self.product = Product.objects.create(product_name='Test Product', description='some product', stock_quantity='4', category=self.category, supplier=self.supplier, price=100.0)
@@ -33,9 +43,9 @@ class ProductModelTest(TestCase):
     def test_str(self):
         self.assertEqual(str(self.product), 'Test Product')
 
-class SaleModelTest(TestCase):
+class SaleModelTest(BaseTestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        super().setUp()
         self.category = Category.objects.create(cat_name='Electronics', created_by=self.user)
         self.supplier = Supplier.objects.create(supplier_name='Supplier A', supplier_email='contact@supplier.com', supplier_phone='+2347086497348')
         self.product = Product.objects.create(product_name='Test Product', category=self.category, supplier=self.supplier, price=100.0)
@@ -45,9 +55,9 @@ class SaleModelTest(TestCase):
     def test_str(self):
         self.assertEqual(str(self.sale), f'Sale of {self.sale.quantity} x {self.sale.product.product_name} to {self.customer.customer_first_name} {self.customer.customer_last_name}')
 
-class StockAdjustmentModelTest(TestCase):
+class StockAdjustmentModelTest(BaseTestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        super().setUp()
         self.category = Category.objects.create(cat_name='Electronics', created_by=self.user)
         self.supplier = Supplier.objects.create(supplier_name='Supplier A', supplier_email='contact@supplier.com', supplier_phone='+2347086497348')
         self.product = Product.objects.create(product_name='Test Product', category=self.category, supplier=self.supplier, price=100.0)
