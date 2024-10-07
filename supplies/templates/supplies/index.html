@@ -1,30 +1,55 @@
 {% extends "supplies/base_user.html" %}
 {% load static %}
-{% block title %}My Home{% endblock %}
+{% block title %} Dashboard {% endblock %}
 {% block content %}
-<h2>Products</h2>
+<h2>Dashboard</h2>
 <div class="container">
+    
+    <div class="card">
+        <div class="card-title">Total Suppliers</div>
+        <div class="card-text" id="total-suppliers">20</div> <!-- Placeholder for dynamic data -->
+    </div>
+
+    <div class="card">
+        <div class="card-title">Total Products</div>
+        <div class="card-text" id="total-products">100</div> <!-- Placeholder for dynamic data -->
+    </div>
+
+    <div class="card">
+        <div class="card-title">Total Sales</div>
+        <div class="card-text" id="total-sales">$2000</div> <!-- Placeholder for dynamic data -->
+    </div>
+
+    <h2>Recent Transactions</h2>
     <table class="item-table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Category</th>
+                <th>Product</th>
+                <th>Customer</th>
                 <th>Quantity</th>
-                <th>Created By</th>
+                <th>Total Price</th>
+                <th>Date</th>
             </tr>
         </thead>
-        <tbody>
-            {% for item in items %}
+        <tbody id="transaction-table">
             <tr>
-                <!-- <td>{{ item.id }}</td>
-                <td>{{ item.item_name }}</td>
-                <td>{{ item.item_category }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.created_by }}</td> -->
+                <td>1</td>
+                <td>Product A</td>
+                <td>John Doe</td>
+                <td>2</td>
+                <td>$200</td>
+                <td>2024-01-01</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>2</td>
+                <td>Product B</td>
+                <td>Jane Smith</td>
+                <td>1</td>
+                <td>$100</td>
+                <td>2024-01-02</td>
+            </tr>
+            <!-- More rows can be dynamically added here -->
         </tbody>
     </table>
-</div>
 {% endblock %}

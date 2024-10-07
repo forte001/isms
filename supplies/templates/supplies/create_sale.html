@@ -1,21 +1,21 @@
 {% extends "supplies/base_user.html" %}
 {% load static %}
-{% block title %}Product list{% endblock %}
+{% block title %}Create Sale {% endblock %}
 {% block content %}
 <h2>Create Sale</h2>
-    <form method="post">
+    <form method="post" class="form">
         {% csrf_token %}
-        <label for="product">Product:</label>
-        <select name="product_id" required>
+        <label for="product" class="label">Product:</label>
+        <select name="product_id" class="input-text" required>
             {% for product in products %}
             <option value="{{ product.id }}">{{ product.product_name }}</option>
             {% endfor %}
         </select>
         <br>
-        <label for="quantity">Quantity:</label>
-        <input type="number" name="quantity" required min="1">
+        <label for="quantity" class="label">Quantity:</label>
+        <input class="input-text" type="number" name="quantity" required min="1">
         <br>
-        <button type="submit">Create Sale</button>
+        <button class="btn" type="submit">Create Sale</button>
     </form>
     <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 {% endblock %}

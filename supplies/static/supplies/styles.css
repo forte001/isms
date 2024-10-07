@@ -199,3 +199,32 @@ h2 {
 .btn:hover {
     background-color: #357ABD; /* Darker blue on hover */
 }
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+.card-text {
+    font-size: 1.2em;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #4A90E2;
+    color: white;
+}
+tr:hover {
+    background-color: #f2f2f2;
+}

@@ -17,6 +17,18 @@ class indexView(generic.ListView):
     def get_queryset(self):
         return Product.objects.all()
 
+# def dashboard_view(request):
+#     total_suppliers = Supplier.objects.count()
+#     total_products = Product.objects.count()
+#     total_sales = Sale.objects.aggregate(sum('total_price'))['total_price'] or 0
+
+#     return render(request, 'supplies/index.html', {
+#         'total_suppliers': total_suppliers,
+#         'total_products': total_products,
+#         'total_sales': total_sales,
+#         'recent_transactions': Sale.objects.all().order_by('-date')[:5],  # Example to get recent transactions
+#     })
+
 
 def product_list(request):
     products = Product.objects.all()
@@ -53,6 +65,22 @@ def create_sale(request):
 def customer_list(request):
     customers = Customer.objects.all()
     return render(request, 'supplies/customer_list.html', {'customers': customers})
+
+def create_customer(request):
+    if request.method == 'POST':
+        customer_first_name = request.POST.get('customer_first_name')
+        customer_last_name = request.POST.get('customer_last_name')
+        customer_email = request.POST.get('customer_email')
+        customer_phone = request.POST.get('customer_phone')
+        
+        # Create a new Customer object and save it to the database
+        customer = Customer.objects.create(customer_first_name=customer_first_name, customer_last_name=customer_last_name, customer_email=customer_email, customer_phone=customer_phone)
+        
+        customer.save()
+        
+        return redirect('supplies:customer_list')  # Redirect to customer list after saving
+
+    return render(request, 'supplies/create_customer.html')  # Render the form for GET requests
 
 def supplier_list(request):
     suppliers = Supplier.objects.all()
