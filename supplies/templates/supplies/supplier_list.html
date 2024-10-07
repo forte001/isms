@@ -3,25 +3,25 @@
 {% block title %}Product list{% endblock %}
 {% block content %}
 <h2>Supplier List</h2>
-    <table>
+    <table class="item-table">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Contact Email</th>
+                <th>Email</th>
                 <th>Phone</th>
             </tr>
         </thead>
         <tbody>
             {% for supplier in suppliers %}
             <tr>
-                <td>{{ supplier.name }}</td>
-                <td>{{ supplier.contact_email }}</td>
-                <td>{{ supplier.phone }}</td>
+                <td>{{ supplier.supplier_name }}</td>
+                <td>{{ supplier.supplier_email }}</td>
+                <td>{{ supplier.supplier_phone }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'create_supplier' %}">Add New Supplier</a>
-    <a href="{% url 'product_list' %}">Back to Product List</a>
+    <a href="{% url 'supplies:create_supplier' %}">Add New Supplier</a>
+    <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 
 {% endblock %}

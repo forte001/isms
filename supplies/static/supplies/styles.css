@@ -149,3 +149,53 @@ h2 {
 .item-table td {
     border: 1px solid #ddd; /* Border */
 }
+
+/* Form styling */
+.form {
+    margin-top: 20px; /* Space above the form */
+    padding: 20px; /* Padding inside the form */
+    background-color: #ffffff; /* White background for the form */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Label styling */
+.label {
+    display: block;
+    margin-bottom: 8px; /* Space between label and input */
+    color: #333; /* Dark text color */
+    font-weight: bold; /* Bold labels */
+}
+
+/* Input styling */
+.input-text,
+.input-email {
+    padding: 10px;
+    width: 100%; /* Full width */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 15px; /* Space between inputs */
+    transition: border-color 0.3s; /* Transition for border color */
+}
+
+.input-text:focus,
+.input-email:focus {
+    border-color: #4A90E2; /* Highlight border on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Button styling */
+.btn {
+    padding: 10px 15px;
+    background-color: #4A90E2; /* Match sidebar color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.btn:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+}

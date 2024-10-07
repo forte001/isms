@@ -3,9 +3,10 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
-from .models import  Category,Customer, Sale, StockAdjustment, Supplier, Product
+from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product
 from django.views import generic
 from django.shortcuts import render, redirect
+
 
 
 class indexView(generic.ListView):
@@ -45,10 +46,9 @@ def create_sale(request):
         return redirect('product_list')
     
     products = Product.objects.all()
-    return render(request, 'create_sale.html', {'products': products})
+    return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-from .models import Customer
 
 def customer_list(request):
     customers = Customer.objects.all()
@@ -56,7 +56,24 @@ def customer_list(request):
 
 def supplier_list(request):
     suppliers = Supplier.objects.all()
-    return render(request, 'suppliers/supplier_list.html', {'suppliers': suppliers})
+    return render(request, 'supplies/supplier_list.html', {'suppliers': suppliers})
+
+
+def create_supplier(request):
+    if request.method == 'POST':
+        supplier_name = request.POST.get('supplier_name')
+        supplier_email = request.POST.get('supplier_email')
+        supplier_phone = request.POST.get('supplier_phone')
+        
+        # Create a new Supplier object and save it to the database
+        supplier = Supplier.objects.create( supplier_name=supplier_name, supplier_email=supplier_email, supplier_phone=supplier_phone)
+        
+        supplier.save()
+        
+        return redirect('supplies:supplier_list')  # Redirect to supplier list after saving
+
+    return render(request, 'supplies/create_supplier.html')  # Render the form for GET requests
+
 
 def adjust_stock(request):
     if request.method == 'POST':
