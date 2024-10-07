@@ -22,8 +22,8 @@
             <td>{{ product.price }}</td>
             <td>{{ product.stock_quantity }}</td>
             <td>
-                <a href="{% url 'product_detail' product.id %}">View Details</a> |
-                <a href="{% url 'create_sale' %}?product_id={{ product.id }}">Create Sale</a>
+                <a href="{% url 'supplies:product_detail' product.id %}">View Details</a> |
+                <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
             </td>
         </tr>
         {% endfor %}

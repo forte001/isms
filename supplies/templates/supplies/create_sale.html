@@ -8,7 +8,7 @@
         <label for="product">Product:</label>
         <select name="product_id" required>
             {% for product in products %}
-            <option value="{{ product.id }}">{{ product.name }}</option>
+            <option value="{{ product.id }}">{{ product.product_name }}</option>
             {% endfor %}
         </select>
         <br>
@@ -17,5 +17,5 @@
         <br>
         <button type="submit">Create Sale</button>
     </form>
-    <a href="{% url 'product_list' %}">Back to Product List</a>
+    <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 {% endblock %}
