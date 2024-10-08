@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %} Dashboard {% endblock %}
 {% block content %}
-<h2>Dashboard</h2>
+<h1>Dashboard</h1>
 <div class="container">
     
     <div class="card">
@@ -19,37 +19,48 @@
         <div class="card-title">Total Sales</div>
         <div class="card-text" id="total-sales">$2000</div> <!-- Placeholder for dynamic data -->
     </div>
+<div class="container">
+    <div class="container">
+        <h2 right-align>Recent Transactions</h2>
+    </div>
 
-    <h2>Recent Transactions</h2>
-    <table class="item-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Customer</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody id="transaction-table">
-            <tr>
-                <td>1</td>
-                <td>Product A</td>
-                <td>John Doe</td>
-                <td>2</td>
-                <td>$200</td>
-                <td>2024-01-01</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Product B</td>
-                <td>Jane Smith</td>
-                <td>1</td>
-                <td>$100</td>
-                <td>2024-01-02</td>
-            </tr>
-            <!-- More rows can be dynamically added here -->
-        </tbody>
-    </table>
+    <div>
+        <table class="item-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Customer</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-table">
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.id}}</td>
+                    <td>{{sale.product.product_name}}</td>
+                    <td>{{ sale.customer}}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>{{ sale.total_price}}</td>
+                    <td>{{ sale.date }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>2</td>
+                    <td>Product B</td>
+                    <td>Jane Smith</td>
+                    <td>1</td>
+                    <td>$100</td>
+                    <td>2024-01-02</td>
+                </tr>
+                <!-- More rows can be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    
+    
+</div>
+    
 {% endblock %}

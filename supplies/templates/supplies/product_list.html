@@ -8,6 +8,7 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Category</th>
             <th>Description</th>
             <th>Price</th>
             <th>Stock Quantity</th>
@@ -18,8 +19,9 @@
         {% for product in products %}
         <tr>
             <td>{{ product.product_name }}</td>
+            <td>{{ product.category }}</td>
             <td>{{ product.description }}</td>
-            <td>{{ product.price }}</td>
+            <td>N{{ product.price }}</td>
             <td>{{ product.stock_quantity }}</td>
             <td>
                 <a href="{% url 'supplies:product_detail' product.id %}">View Details</a> |
