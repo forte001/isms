@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product
 from django.views import generic
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 
 
 
@@ -41,15 +42,16 @@ def product_detail(request, product_id):
     return render(request, 'supplies/product_detail.html', {'product': product})
 
 
-def create_sale(request):
+def create_sale(request, username):
     if request.method == 'POST':
+        customer = User.objects.get(username=username)
         product_id = request.POST.get('product_id')
         quantity = int(request.POST.get('quantity'))
         product = Product.objects.get(id=product_id)
         
         total_price = product.price * quantity
         
-        Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
+        Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=customer)
         
         # Update stock quantity
         product.stock_quantity -= quantity
