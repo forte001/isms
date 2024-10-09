@@ -3,35 +3,36 @@
 {% block title %}Product list{% endblock %}
 {% block content %}
 <h2>Product List</h2>
-<div class="container">
-    <table class="item-table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Stock Quantity</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        <tr>
-            <td>{{ product.product_name }}</td>
-            <td>{{ product.category }}</td>
-            <td>{{ product.description }}</td>
-            <td>N{{ product.price }}</td>
-            <td>{{ product.stock_quantity }}</td>
-            <td>
-                <a href="{% url 'supplies:product_detail' product.id %}">View Details</a> |
-                <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 <a href="{% url 'supplies:adjust_stock' %}">Adjust Stock</a>
 <a href="{% url 'supplies:low_stock_alerts' %}">Low Stock Alerts</a>
+<div class="container">
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.description }}</td>
+                <td>N{{ product.price }}</td>
+                <td>{{ product.stock_quantity }}</td>
+                <td>
+                    <a href="{% url 'supplies:product_detail' product.id %}">View Details</a> |
+                    <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
