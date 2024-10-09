@@ -1,4 +1,4 @@
-% extends "supplies/base_user.html" %}
+{% extends "supplies/base_user.html" %}
 {% load static %}
 {% block title %}Low Stock Alert {% endblock %}
 {% block content %}
@@ -7,7 +7,7 @@
 {% if low_stock_products %}
     <ul>
         {% for product in low_stock_products %}
-        <li>{{ product.name }} - Current Stock: {{ product.stock_quantity }}</li>
+        <li>{{ product.product_name }} - Current Stock: {{ product.stock_quantity }}</li>
         {% endfor %}
     </ul>
 {% else %}
