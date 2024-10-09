@@ -49,7 +49,7 @@ def create_sale(request, ):
         product.stock_quantity -= quantity
         product.save()
 
-        return redirect('product_list')
+        return redirect('supplies:product_list')
     
     products = Product.objects.all()
     return render(request, 'supplies/create_sale.html', {'products': products})
