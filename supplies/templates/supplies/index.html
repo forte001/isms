@@ -7,17 +7,17 @@
     
     <div class="card">
         <div class="card-title">Total Suppliers</div>
-        <div class="card-text" id="total-suppliers">20</div> <!-- Placeholder for dynamic data -->
+        <div class="card-text" id="total-suppliers">{{ total_suppliers }}</div> 
     </div>
 
     <div class="card">
         <div class="card-title">Total Products</div>
-        <div class="card-text" id="total-products">100</div> <!-- Placeholder for dynamic data -->
+        <div class="card-text" id="total-products">{{ total_products }}</div> 
     </div>
 
     <div class="card">
         <div class="card-title">Total Sales</div>
-        <div class="card-text" id="total-sales">$2000</div> <!-- Placeholder for dynamic data -->
+        <div class="card-text" id="total-sales">{{ total_sales }}</div> 
     </div>
 <div class="container">
     <div class="container">
@@ -47,15 +47,7 @@
                     <td>{{ sale.date }}</td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    <td>2</td>
-                    <td>Product B</td>
-                    <td>Jane Smith</td>
-                    <td>1</td>
-                    <td>$100</td>
-                    <td>2024-01-02</td>
-                </tr>
-                <!-- More rows can be dynamically added here -->
+                
             </tbody>
         </table>
     </div>

@@ -7,28 +7,21 @@ from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Produc
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 
 
-class indexView(generic.ListView):
-    template_name = "supplies/index.html"
-    context_object_name = 'products'
+def dashboard_view(request):
+    total_suppliers = Supplier.objects.count()
+    total_products = Product.objects.count()
+    total_sales = Sale.objects.aggregate(total=Sum('total_price'))['total'] or 0
 
-
-    def get_queryset(self):
-        return Product.objects.all()
-
-# def dashboard_view(request):
-#     total_suppliers = Supplier.objects.count()
-#     total_products = Product.objects.count()
-#     total_sales = Sale.objects.aggregate(sum('total_price'))['total_price'] or 0
-
-#     return render(request, 'supplies/index.html', {
-#         'total_suppliers': total_suppliers,
-#         'total_products': total_products,
-#         'total_sales': total_sales,
-#         'recent_transactions': Sale.objects.all().order_by('-date')[:5],  # Example to get recent transactions
-#     })
+    return render(request, 'supplies/index.html', {
+        'total_suppliers': total_suppliers,
+        'total_products': total_products,
+        'total_sales': total_sales,
+        'recent_transactions': Sale.objects.all().order_by('-date')[:5],
+    })
 
 
 def product_list(request):

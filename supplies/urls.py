@@ -4,7 +4,7 @@ from .views import *
 app_name = 'supplies'
 
 urlpatterns = [
-    path("", indexView.as_view(), name="index"),
+    path("", dashboard_view, name="index"),
     path("products/", product_list, name='product_list'),
     path('products/<int:product_id>/', product_detail, name='product_detail'),
     path('sales/create/', create_sale, name='create_sale'),

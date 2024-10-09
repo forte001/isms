@@ -4,7 +4,8 @@
 {% block content %}
 
 <h2>Low Stock Alerts</h2>
-{% if low_stock_products %}
+<div class="container">
+    {% if low_stock_products %}
     <ul>
         {% for product in low_stock_products %}
         <li>{{ product.product_name }} - Current Stock: {{ product.stock_quantity }}</li>
@@ -13,4 +14,7 @@
 {% else %}
     <p>No low stock products.</p>
 {% endif %}
+<a href="{% url 'supplies:product_list' %}">Back to Product List</a>
+</div>
+
 {% endblock %}
