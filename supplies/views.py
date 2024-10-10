@@ -5,10 +5,10 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product
 from django.views import generic
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Sum
-
+from django.views import View
 
 
 def dashboard_view(request):
@@ -24,12 +24,22 @@ def dashboard_view(request):
     })
 
 
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'supplies/product_list.html', {'products': products})
+class ProductListView(View):
+    template_name = 'supplies/product_list.html'
 
-def create_product(request):
-    if request.method == 'POST':
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, self.template_name, {'products': products})
+
+class CreateProductView(View):
+    template_name = 'supplies/create_product.html'
+
+    def get(self, request):
+        categories = Category.objects.all()
+        suppliers = Supplier.objects.all()
+        return render(request, self.template_name, {'categories': categories, 'suppliers': suppliers})
+
+    def post(self, request):
         product_name = request.POST.get('product_name')
         description = request.POST.get('description')
         price = float(request.POST.get('price'))
@@ -39,23 +49,51 @@ def create_product(request):
         supplier_id = request.POST.get('supplier_id')
         supplier = Supplier.objects.get(id=supplier_id)
 
-        
         # Create a new Product object and save it to the database
-        product = Product.objects.create(product_name=product_name, description=description, price=price, stock_quantity=stock_quantity, category=category, supplier=supplier)
+        Product.objects.create(
+            product_name=product_name,
+            description=description,
+            price=price,
+            stock_quantity=stock_quantity,
+            category=category,
+            supplier=supplier
+        )
         
+        return redirect('supplies:product_list')
+
+class ProductDetailView(View):
+    template_name = 'supplies/product_detail.html'
+
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        return render(request, self.template_name, {'product': product})
+    
+class UpdateProductView(View):
+    template_name = 'supplies/update_product.html'
+
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        categories = Category.objects.all()
+        suppliers = Supplier.objects.all()
+        return render(request, self.template_name, {'product': product, 'categories': categories, 'suppliers': suppliers})
+
+    def post(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        product.product_name = request.POST.get('product_name')
+        product.description = request.POST.get('description')
+        product.price = float(request.POST.get('price'))
+        product.stock_quantity = int(request.POST.get('stock_quantity'))
+        product.category = get_object_or_404(Category, id=request.POST.get('category_id'))
+        product.supplier = get_object_or_404(Supplier, id=request.POST.get('supplier_id'))
         product.save()
-        
-        return redirect('supplies:product_list')  # Redirect to product list after saving
-    products = Product.objects.all()
-    categories = Category.objects.all()
-    suppliers = Supplier.objects.all()
-    return render(request, 'supplies/create_product.html', {'products':products, 'categories':categories, 'suppliers':suppliers})  # Render the form for GET requests
 
-## Product Detail view
-def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
-    return render(request, 'supplies/product_detail.html', {'product': product})
+        return redirect('supplies:product_list')
 
+class DeleteProductView(View):
+    def post(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        product.delete()
+        return redirect('supplies:product_list')
 
 def create_sale(request, ):
     if request.method == 'POST':

@@ -27,8 +27,9 @@
                 <td>N{{ product.price }}</td>
                 <td>{{ product.stock_quantity }}</td>
                 <td>
-                
+                    <a href="{% url 'supplies:update_product' product.id %}">Update Product</a>
                     <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
+
                 </td>
             </tr>
             {% endfor %}
