@@ -6,6 +6,8 @@
 <a href="{% url 'supplies:adjust_stock' %}">Adjust Stock</a>
 <a href="{% url 'supplies:low_stock_alerts' %}">Low Stock Alerts</a>
 <a href="{% url 'supplies:create_product' %}">Create Product</a>
+<a href="{% url 'supplies:product_list' %}?download=1">Download Product list (CSV)</a>
+<a href="{% url 'supplies:import_products' %}">import Products (CSV)</a>
 <div class="container">
     <table class="item-table">
         <thead>
@@ -28,6 +30,7 @@
                 <td>{{ product.stock_quantity }}</td>
                 <td>
                     <a href="{% url 'supplies:update_product' product.id %}">Update Product</a>
+                    <a href="{% url 'supplies:delete_product' product.id %}">Delete Product</a>
                     <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
 
                 </td>

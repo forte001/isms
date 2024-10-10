@@ -1,0 +1,13 @@
+{% extends "supplies/base_user.html" %}
+{% block title %}Delete Product{% endblock %}
+{% block content %}
+<h2>Delete Product</h2>
+<p>Are you sure you want to delete the product "{{ product.product_name }}"?</p>
+<form method="post" class="form">
+    {% csrf_token %}
+    <button class="btn" type="submit">Yes, delete it</button>
+</form>
+
+<a href="{% url 'supplies:product_list' %}">Back to product List</a>
+
+{% endblock %}

@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.views import View
+import csv, io
 
 
 def dashboard_view(request):
@@ -29,7 +30,33 @@ class ProductListView(View):
 
     def get(self, request):
         products = Product.objects.all()
+         # Check for CSV download request
+        if 'download' in request.GET:
+            return self.download_csv(products)
         return render(request, self.template_name, {'products': products})
+  
+  ### Downloads CSV file of products
+    def download_csv(self, products):
+        # Create an HTTP response with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="products_list.csv"'
+
+        # Create a CSV writer
+        writer = csv.writer(response)
+        writer.writerow(['Product Name', 'Description', 'Price(N)', 'Stock Quantity', 'Category', 'Supplier'])  # Header row
+        
+        # Write product data
+        for product in products:
+            writer.writerow([
+                product.product_name,
+                product.description,
+                product.price,
+                product.stock_quantity,
+                product.category.cat_name,  # Assuming cat_name is the field name for the category
+                product.supplier.supplier_name        # Assuming name is the field name for the supplier
+            ])
+
+        return response
 
 class CreateProductView(View):
     template_name = 'supplies/create_product.html'
@@ -60,6 +87,48 @@ class CreateProductView(View):
         )
         
         return redirect('supplies:product_list')
+    
+    ### imports CSV to create products
+class ImportProductView(View):
+    template_name = 'supplies/import_product.html'
+
+    def get(self, request):
+        # Render the import product form
+        return render(request, self.template_name)
+
+    def post(self, request):
+        if 'csv_file' in request.FILES:
+            csv_file = request.FILES['csv_file']
+            if csv_file.name.endswith('.csv'):
+                # Decode the uploaded CSV file
+                decoded_file = csv_file.read().decode('utf-8')
+                io_string = io.StringIO(decoded_file)
+
+                next(io_string)  # Skip the header row
+                for row in csv.reader(io_string, delimiter=','):
+                    # Assign each value from the CSV row to a variable
+                    product_name, description, price, stock_quantity, category_name, supplier_name = row
+
+                    # Get category and supplier objects
+                    category = get_object_or_404(Category, cat_name=category_name)
+                    supplier = get_object_or_404(Supplier, supplier_name=supplier_name)
+
+                    # Create the product
+                    Product.objects.create(
+                        product_name=product_name,
+                        description=description,
+                        price=float(price),
+                        stock_quantity=int(stock_quantity),
+                        category=category,
+                        supplier=supplier
+                    )
+
+                return redirect('supplies:product_list')
+            else:
+                return HttpResponse("This is not a CSV file.")
+        else:
+            return HttpResponse("No CSV file uploaded.")
+
 
 class ProductDetailView(View):
     template_name = 'supplies/product_detail.html'
@@ -90,6 +159,9 @@ class UpdateProductView(View):
         return redirect('supplies:product_list')
 
 class DeleteProductView(View):
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        return render(request, 'supplies/delete_product.html', {'product': product})
     def post(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
         product.delete()
