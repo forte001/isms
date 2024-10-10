@@ -9,11 +9,11 @@
     {% if low_stock_products %}
     <ul>
         {% for product in low_stock_products %}
-        <li>{{ product.product_name }} - Current Stock: {{ product.stock_quantity }}</li>
+        <li style="color: red;">{{ product.product_name }} - Current Stock: {{ product.stock_quantity }}</li>
         {% endfor %}
     </ul>
 {% else %}
-    <p>No low stock products.</p>
+    <strong><p style="color: green;">No low stock products. You're all good!</p></strong>
 {% endif %}
 
 </div>

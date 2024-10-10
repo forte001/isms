@@ -28,6 +28,28 @@ def product_list(request):
     products = Product.objects.all()
     return render(request, 'supplies/product_list.html', {'products': products})
 
+def create_product(request):
+    if request.method == 'POST':
+        product_name = request.POST.get('product_name')
+        description = request.POST.get('description')
+        price = float(request.POST.get('price'))
+        stock_quantity = int(request.POST.get('stock_quantity'))
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        supplier_id = request.POST.get('supplier_id')
+        supplier = Supplier.objects.get(id=supplier_id)
+
+        
+        # Create a new Product object and save it to the database
+        product = Product.objects.create(product_name=product_name, description=description, price=price, stock_quantity=stock_quantity, category=category, supplier=supplier)
+        
+        product.save()
+        
+        return redirect('supplies:product_list')  # Redirect to product list after saving
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    suppliers = Supplier.objects.all()
+    return render(request, 'supplies/create_product.html', {'products':products, 'categories':categories, 'suppliers':suppliers})  # Render the form for GET requests
 
 ## Product Detail view
 def product_detail(request, product_id):
@@ -52,6 +74,8 @@ def create_sale(request, ):
         return redirect('supplies:product_list')
     
     products = Product.objects.all()
+    
+
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 

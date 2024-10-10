@@ -6,6 +6,7 @@ app_name = 'supplies'
 urlpatterns = [
     path("", dashboard_view, name="index"),
     path("products/", product_list, name='product_list'),
+    path('product/create/', create_product, name='create_product'),
     path('products/<int:product_id>/', product_detail, name='product_detail'),
     path('sales/create/', create_sale, name='create_sale'),
     path('customer/', customer_list, name='customer_list'),
