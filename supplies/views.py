@@ -37,8 +37,12 @@ class ProductListView(View):
         products = Product.objects.all()
          # Check for CSV download request
         if 'download' in request.GET:
+            if 'sample' in request.GET:
+                return self.download_sample_csv()
             return self.download_csv(products)
+
         return render(request, self.template_name, {'products': products})
+
   
   ### Downloads CSV file of products
     def download_csv(self, products):
@@ -60,6 +64,15 @@ class ProductListView(View):
                 product.category.cat_name,  # Assuming cat_name is the field name for the category
                 product.supplier.supplier_name        # Assuming name is the field name for the supplier
             ])
+
+        return response
+    ### Downloads a sample CSV file with just the header
+    def download_sample_csv(self):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="sample_products_list.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['Product Name', 'Description', 'Price(N)', 'Stock Quantity', 'Category', 'Supplier'])  # Header row
 
         return response
 
