@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password, make_password
 
 
     # @admin.display(
@@ -51,9 +52,17 @@ class Customer(models.Model):
     customer_last_name = models.CharField(max_length=100)
     customer_email = models.EmailField()
     customer_phone = models.CharField(max_length=20)
+    password = models.CharField(max_length=128, default='password')
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.customer_first_name} {self.customer_last_name}"
+    
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
     
 
 ### Sale Model

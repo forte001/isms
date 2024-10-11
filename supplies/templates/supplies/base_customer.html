@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inventory Manager{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'supplies/styles.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Shopping Manager</h2>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
+                <li><a href="#">Transactions</a></li>
+                <li><a href="#">Customers</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="header">
+                <div class="search-box">
+                    <input type="text" placeholder="Search...">
+                    <button>Search</button>
+                </div>
+                <div class="user-profile">
+                    <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
+                    <div class="dropdown" id="dropdown-menu">
+                        <div class="dropdown-item">View Profile</div>
+                        <div class="dropdown-item">Settings</div>
+                        <div class="dropdown-item" onclick="logout()">Logout</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content">
+                {% block content %}
+                <!-- Main content will go here -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#profile-icon').click(function() {
+                $('#dropdown-menu').toggle();
+            });
+            $(document).click(function(event) {
+                if (!$(event.target).closest('.user-profile').length) {
+                    $('#dropdown-menu').hide();
+                }
+            });
+        });
+
+        function logout() {
+            // Add your logout logic here
+            alert('Logging out...');
+        }
+    </script>
+</body>
+</html>

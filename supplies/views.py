@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.views import View
 import csv, io
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def dashboard_view(request):
@@ -190,25 +192,69 @@ def create_sale(request, ):
 
 
 
-def customer_list(request):
-    customers = Customer.objects.all()
-    return render(request, 'supplies/customer_list.html', {'customers': customers})
+class CustomerListView(View):
+    template_name = 'supplies/customer_list.html'
 
-def create_customer(request):
-    if request.method == 'POST':
+    def get(self, request):
+        customers = Customer.objects.all()
+        return render(request, self.template_name, {'customers': customers})
+
+class CreateCustomerView(View):
+    template_name = 'supplies/customer_access.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
         customer_first_name = request.POST.get('customer_first_name')
         customer_last_name = request.POST.get('customer_last_name')
         customer_email = request.POST.get('customer_email')
         customer_phone = request.POST.get('customer_phone')
+        password = request.POST.get('password')
+
+        # Debugging output
+        print("First Name:", customer_first_name)
+        print("Last Name:", customer_last_name)
+        print("Email:", customer_email)
+        print("Phone:", customer_phone)
         
         # Create a new Customer object and save it to the database
-        customer = Customer.objects.create(customer_first_name=customer_first_name, customer_last_name=customer_last_name, customer_email=customer_email, customer_phone=customer_phone)
+        customer = Customer(
+            customer_first_name=customer_first_name,
+            customer_last_name=customer_last_name,
+            customer_email=customer_email,
+            customer_phone=customer_phone,
+            password=make_password(password)  # Hash the password
+        )
         
         customer.save()
-        
-        return redirect('supplies:customer_list')  # Redirect to customer list after saving
+        messages.success(request, 'Account created successfully!')
+        return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
-    return render(request, 'supplies/create_customer.html')  # Render the form for GET requests
+class LoginView(View):
+    template_name = 'supplies/customer_access.html'  # Use the same template for simplicity
+
+    def post(self, request):
+        email = request.POST.get('customer_email')
+        password = request.POST.get('password')
+
+        try:
+            customer = Customer.objects.get(customer_email=email)
+            if check_password(password, customer.password):
+                request.session['customer_id'] = customer.id  # Store customer ID in session
+                return redirect('supplies:customer_dashboard')  # Redirect to the customer Dashboard
+            else:
+                messages.error(request, 'Invalid email or password.')
+        except Customer.DoesNotExist:
+            messages.error(request, 'Invalid email or password.')
+
+        return render(request, self.template_name)
+    
+class CustomerDashboardView(View):
+    template_name = 'supplies/customer_dashboard.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 def supplier_list(request):
     suppliers = Supplier.objects.all()

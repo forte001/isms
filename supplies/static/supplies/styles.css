@@ -117,6 +117,11 @@ body {
     margin-top: 20px;
 }
 
+h1 {
+    text-align: center;
+    color: #333;
+}
+
 h2 {
     color: #333;
     text-align: center;
@@ -310,4 +315,16 @@ select:focus {
 
 .dropdown-content a:hover {
     background-color: #f1f1f1; /* Highlight on hover */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 }

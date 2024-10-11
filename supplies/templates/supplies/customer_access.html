@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inventory Manager{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'supplies/styles.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Customer Access</h1>
+    <!-- <form method="post" class="form">
+        {% csrf_token %}
+        <label class="label" for="customer_first_name">Customer First Name:</label>
+        <input class="input-text" type="text" id="customer_first_name" name="customer_first_name" required>
+
+        <label class="label" for="customer_last_name">Customer Last Name:</label>
+        <input class="input-text" type="text" id="customer_last_name" name="customer_last_name" required>
+
+        <label class="label" for="customer_email">Customer Email:</label>
+        <input class="input-email" type="email" id="customer_email" name="customer_email" required>
+
+        <label class="label" for="customer_phone">Customer Phone:</label>
+        <input class="input-text" type="text" id="customer_phone" name="customer_phone" required>
+
+        <button class="btn" type="submit">Save Customer</button>
+    </form>
+<a href="{% url 'supplies:customer_list' %}">Back to Customer List</a> -->
+
+<div class="container">
+    
+    <div class="form-container">
+        <div class="form-section" id="register-section">
+            <h2>Create Account</h2>
+            <form method="post" class="form">
+                {% csrf_token %}
+                <label for="first-name" class="label">First Name:</label>
+                <input class="input-text" type="text" id="customer_first_name" name="customer_first_name" required>
+
+                <label for="last-name" class="label">Last Name:</label>
+                <input class="input-text" type="text" id="customer_last_name" name="customer_last_name" required>
+
+                <label for="email" class="label">Email:</label>
+                <input class="input-email" type="email" id="customer_email" name="customer_email" required>
+
+                <label for="phone" class="label">Phone:</label>
+                <input class="input-text" type="text" id="customer_phone" name="customer_phone" required>
+
+                <label for="password" class="">Password:</label>
+                <input class="input-text" type="password" id="password" name="password" required>
+
+                <button class="btn" type="submit">Register</button>
+            </form>
+        </div>
+
+        
+    </div>
+    <div class="form-section" id="login-section">
+        <h2>Login</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+            <label for="login-email" class="label">Email:</label>
+            <input class="input-email" type="email" id="customer_email" required>
+
+            <label for="login-password" class="label">Password:</label>
+            <input class="input-text" type="password" id="password" required>
+
+            <button class="btn" type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="form-section" id="reset-section">
+        <h2>Password Reset</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+            <label for="reset-email" class="label">Email:</label>
+            <input class="input-email" type="email" id="customer_email" required>
+
+            <button class="btn" type="submit">Reset Password</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#profile-icon').click(function() {
+            $('#dropdown-menu').toggle();
+        });
+        $(document).click(function(event) {
+            if (!$(event.target).closest('.user-profile').length) {
+                $('#dropdown-menu').hide();
+            }
+        });
+    });
+
+    function logout() {
+        // Add your logout logic here
+        alert('Logging out...');
+    }
+</script>
+</body>
+</html>
