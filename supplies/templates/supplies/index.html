@@ -3,7 +3,7 @@
 {% block title %} Dashboard {% endblock %}
 {% block content %}
 <h1>Dashboard</h1>
-<div class="container">
+<div class="button-row">
     
     <div class="card">
         <div class="card-title">Total Suppliers</div>
@@ -19,12 +19,11 @@
         <div class="card-title">Total Sales</div>
         <div class="card-text" id="total-sales">N{{ total_sales }}</div> 
     </div>
-<div class="container">
-    <div class="container">
-        <h2 right-align>Recent Transactions</h2>
-    </div>
 
-    <div>
+    
+</div>
+<h2>Recent Transactions</h2>
+<div class="container">
         <table class="item-table">
             <thead>
                 <tr>
@@ -47,12 +46,8 @@
                     <td>{{ sale.date }}</td>
                 </tr>
                 {% endfor %}
-                
             </tbody>
         </table>
-    </div>
-    
-    
 </div>
     
 {% endblock %}

@@ -14,17 +14,20 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 
 
-def dashboard_view(request):
-    total_suppliers = Supplier.objects.count()
-    total_products = Product.objects.count()
-    total_sales = Sale.objects.aggregate(total=Sum('total_price'))['total'] or 0
+class DashboardView(View):
+    template_name = 'supplies/index.html'
 
-    return render(request, 'supplies/index.html', {
+    def get(self, request):
+        total_suppliers = Supplier.objects.count()
+        total_products = Product.objects.count()
+        total_sales = Sale.objects.aggregate(total=Sum('total_price'))['total'] or 0
+
+        return render(request, self.template_name, {
         'total_suppliers': total_suppliers,
         'total_products': total_products,
         'total_sales': total_sales,
         'recent_transactions': Sale.objects.all().order_by('-date')[:5],
-    })
+        })
 
 
 class ProductListView(View):
