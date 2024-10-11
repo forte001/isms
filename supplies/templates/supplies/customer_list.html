@@ -11,6 +11,7 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -20,11 +21,21 @@
             <td>{{ customer.customer_last_name }}</td>
             <td>{{ customer.customer_email }}</td>
             <td>{{ customer.customer_phone }}</td>
+            <td>
+                <div class="dropdown-container">
+                    <button class="dropbtn">Select an Action</button>
+                    <div class="dropdown-content">
+                        <a href="#">Update Customer Detail </Details></a>
+                        <a href="#">Delete Customer</a>
+                        
+                    </div>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'supplies:create_customer' %}">Add New Customer</a>
+<a href="#">Add New Customer</a>
 <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 
 {% endblock %}

@@ -227,12 +227,11 @@ class CreateCustomerView(View):
         customer_email = request.POST.get('customer_email')
         customer_phone = request.POST.get('customer_phone')
         password = request.POST.get('password')
-
-        # Debugging output
-        print("First Name:", customer_first_name)
-        print("Last Name:", customer_last_name)
-        print("Email:", customer_email)
-        print("Phone:", customer_phone)
+        
+         # Check if the email already exists
+        if Customer.objects.filter(customer_email=customer_email).exists():
+            messages.error(request, 'Email already exists. Please use a different email.')
+            return redirect('supplies:customer_access')
         
         # Create a new Customer object and save it to the database
         customer = Customer(
@@ -242,6 +241,8 @@ class CreateCustomerView(View):
             customer_phone=customer_phone,
             password=make_password(password)  # Hash the password
         )
+
+        
         
         customer.save()
         messages.success(request, 'Account created successfully!')

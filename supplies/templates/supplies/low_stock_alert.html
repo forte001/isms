@@ -5,13 +5,26 @@
 
 <h2>Low Stock Alerts</h2>
 <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
-<div class="container">
-    {% if low_stock_products %}
-    <ul>
+<div>
+{% if low_stock_products %}
+    <table class="item-table">
+        <thead>
+            <th>Product Name</th>
+            <th>Current Stock</th>
+        </thead>
+        <tbody>
+           
         {% for product in low_stock_products %}
-        <li style="color: red;">{{ product.product_name }} - Current Stock: {{ product.stock_quantity }}</li>
-        {% endfor %}
-    </ul>
+            <tr style="color: red;">
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.stock_quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+
+    
 {% else %}
     <strong><p style="color: green;">No low stock products. You're all good!</p></strong>
 {% endif %}
