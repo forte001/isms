@@ -232,21 +232,19 @@ class CreateCustomerView(View):
         if Customer.objects.filter(customer_email=customer_email).exists():
             messages.error(request, 'Email already exists. Please use a different email.')
             return redirect('supplies:customer_access')
-        
+        else:
         # Create a new Customer object and save it to the database
-        customer = Customer(
+            customer = Customer(
             customer_first_name=customer_first_name,
             customer_last_name=customer_last_name,
             customer_email=customer_email,
             customer_phone=customer_phone,
             password=make_password(password)  # Hash the password
         )
-
-        
-        
-        customer.save()
-        messages.success(request, 'Account created successfully!')
-        return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
+            
+            customer.save()
+            messages.success(request, 'Account created successfully!')
+            return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
 class LoginView(View):
     template_name = 'supplies/customer_access.html'  # Use the same template for simplicity
