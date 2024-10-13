@@ -265,6 +265,16 @@ class LoginView(View):
 
         return render(request, self.template_name)
     
+class DeleteCustomerView(View):
+    def get(self, request, customer_id):
+        customer = get_object_or_404(Customer, id=customer_id)
+        return render(request, 'supplies/delete_customer.html', {'customer': customer})
+    
+    def post(self, request, customer_id):
+        customer = get_object_or_404(Customer, id=customer_id)
+        customer.delete()
+        return redirect('supplies:customer_list')
+    
 class CustomerDashboardView(View):
     template_name = 'supplies/customer_dashboard.html'
 

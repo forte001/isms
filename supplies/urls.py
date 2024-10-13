@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CreateCustomerView, LoginView, CustomerDashboardView, DashboardView
+from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CreateCustomerView, LoginView, CustomerDashboardView, DashboardView, DeleteCustomerView
 
 
 app_name = 'supplies'
@@ -17,6 +17,7 @@ urlpatterns = [
     path('customer/', CustomerListView.as_view(), name='customer_list'),
     path('customers/create/', CreateCustomerView.as_view(), name='customer_access'),
     path('customer/login/', LoginView.as_view(), name='login'),
+    path('customer/delete/<int:customer_id>/', DeleteCustomerView.as_view(), name='delete_customer'),
     path('customer/dashboard', CustomerDashboardView.as_view(), name='customer_dashboard'),
     path('suppliers/', supplier_list, name='supplier_list'),
     path('suppliers/create/', create_supplier, name='create_supplier'), 

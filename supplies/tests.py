@@ -10,9 +10,9 @@ from django.contrib.messages import get_messages
 ### Base Test Case available universally to other portion of the test code for use
 class BaseTestCase(TestCase):
 
-    """ This portion of code for the user
-    make it the user available to other portion of 
-    the test code for use, thereby avoiding unnecessary repetition
+    """ This portion of code
+    make the defined variables available to other portion of 
+    the test code for use when extended via the class that wants to use it, thereby avoiding unnecessary repetition
     """
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')
