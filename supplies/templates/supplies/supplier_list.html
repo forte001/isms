@@ -9,6 +9,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -17,6 +18,17 @@
                 <td>{{ supplier.supplier_name }}</td>
                 <td>{{ supplier.supplier_email }}</td>
                 <td>{{ supplier.supplier_phone }}</td>
+                <td>
+                    <div class="dropdown-container">
+                        <button class="dropbtn">Select an Action</button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'supplies:update_supplier' supplier.id %}">Update Supplier</a>
+                            <a href="{% url 'supplies:delete_supplier' supplier.id %}">Delete Supplier</a>
+                            
+                        </div>
+                    </div>
+
+                </td>
             </tr>
             {% endfor %}
         </tbody>
