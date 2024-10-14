@@ -280,26 +280,90 @@ class CustomerDashboardView(View):
 
     def get(self, request):
         return render(request, self.template_name)
-
-def supplier_list(request):
-    suppliers = Supplier.objects.all()
-    return render(request, 'supplies/supplier_list.html', {'suppliers': suppliers})
+    
 
 
-def create_supplier(request):
-    if request.method == 'POST':
-        supplier_name = request.POST.get('supplier_name')
-        supplier_email = request.POST.get('supplier_email')
-        supplier_phone = request.POST.get('supplier_phone')
-        
+class SupplierListVIew(View):
+    template_name = 'supplies/supplier_list.html'
+
+    def get(self, request):
+        suppliers = Supplier.objects.all()
+        return render(request, self.template_name, {'suppliers': suppliers})
+
+class CreateSupplierView(View):
+    template_name = 'supplier/create_supplier.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+    
+    def post(self, request):
+            supplier_name = request.POST.get('supplier_name')
+            supplier_email = request.POST.get('supplier_email')
+            supplier_phone = request.POST.get('supplier_phone')
+
+             # Check if the email already exists
+            if Supplier.objects.filter(supplier_email=supplier_email).exists():
+                messages.error(request, 'Email already exists. Please use a different email.')
+                return redirect('supplies:create_supplier')
+            else:
         # Create a new Supplier object and save it to the database
-        supplier = Supplier.objects.create( supplier_name=supplier_name, supplier_email=supplier_email, supplier_phone=supplier_phone)
+                supplier = Supplier( 
+                    supplier_name=supplier_name,
+                    supplier_email=supplier_email, 
+                    supplier_phone=supplier_phone
+                    )
         
-        supplier.save()
-        
-        return redirect('supplies:supplier_list')  # Redirect to supplier list after saving
+                supplier.save()
+                messages.success(request, 'Account created successfully!')
+                return redirect('supplies:supplier_list')  # Redirect to supplier list after saving
 
-    return render(request, 'supplies/create_supplier.html')  # Render the form for GET requests
+class UpdateSupplierView(View):
+    template_name = 'supplier/supplier_list.html'
+
+    def get(self, request, supplier_id):
+        supplier = get_object_or_404(Supplier, id=supplier_id)
+        return render(request, self.template_name, {'supplier':supplier})
+
+    def post(self, request, supplier_id):
+        supplier = get_object_or_404(Supplier, id=supplier_id)
+        supplier.supplier_name = request.POST.get('supplier_name')
+        supplier.supplier_email = request.POST.get('supplier_phone')
+        supplier.supplier_phone = request.POST.get('supplier_phone')
+
+        supplier.save()
+        return redirect('supplies:supplier_list')       
+
+class DeleteSupplierView(View):
+    def get(self, request, supplier_id):
+        supplier = get_object_or_404(Supplier, id=supplier_id)
+        return render(request, 'supplies/delete_supplier.html', {'supplier': supplier})
+    
+    def post(self, request, supplier_id):
+        supplier = get_object_or_404(Supplier, id=supplier_id)
+        supplier.delete()
+        return redirect('supplies:supplier_list')
+
+
+
+# def supplier_list(request):
+#     suppliers = Supplier.objects.all()
+#     return render(request, 'supplies/supplier_list.html', {'suppliers': suppliers})
+
+
+# def create_supplier(request):
+#     if request.method == 'POST':
+#         supplier_name = request.POST.get('supplier_name')
+#         supplier_email = request.POST.get('supplier_email')
+#         supplier_phone = request.POST.get('supplier_phone')
+        
+#         # Create a new Supplier object and save it to the database
+#         supplier = Supplier.objects.create( supplier_name=supplier_name, supplier_email=supplier_email, supplier_phone=supplier_phone)
+        
+#         supplier.save()
+        
+#         return redirect('supplies:supplier_list')  # Redirect to supplier list after saving
+
+#     return render(request, 'supplies/create_supplier.html')  # Render the form for GET requests
 
 
 def adjust_stock(request):
