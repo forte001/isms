@@ -3,6 +3,7 @@
 {% block title %}Product list{% endblock %}
 {% block content %}
 <h2>Product List</h2>
+
 <div class="button-row">
     <a href="{% url 'supplies:adjust_stock' %}" class="btn">Adjust Stock</a>
     <a href="{% url 'supplies:low_stock_alerts' %}" class="btn">Low Stock Alerts</a>
@@ -46,15 +47,16 @@
                 <td>N{{ product.price }}</td>
                 <td>{{ product.stock_quantity }}</td>
                 <td>
+                    
                     <div class="dropdown-container">
                         <button class="dropbtn">Select an Action</button>
                         <div class="dropdown-content">
                             <a href="{% url 'supplies:update_product' product.id %}">Update Product</a>
                             <a href="{% url 'supplies:delete_product' product.id %}">Delete Product</a>
-                            <a href="{% url 'supplies:create_sale' %}?product_id={{ product.id }}">Create Sale</a>
                             
                         </div>
                     </div>
+
 
                 </td>
             </tr>

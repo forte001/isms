@@ -20,6 +20,15 @@ class Product(models.Model):
         category = models.ForeignKey('Category', on_delete=models.SET_NULL,null=True, blank=True)
         supplier = models.ForeignKey('Supplier', on_delete=models.SET_NULL,null=True, blank=True)
 
+        class Meta:
+            permissions = [
+            ("create_product", "Can create product"),
+            ("mport_product", "Can import product"),
+            ("custom_view_product", "Can custom view product"),
+            ("update_product", "Can update product"),
+            ("custom_delete_product", "Can custom_delete product"),
+        ]
+
         def __str__(self):
             return self.product_name
         

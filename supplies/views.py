@@ -34,6 +34,9 @@ class ProductListView(View):
     template_name = 'supplies/product_list.html'
 
     def get(self, request):
+        if not request.user.has_perm('supplies.custom_view_product'):
+            return HttpResponse("You do not have permission to view this page.", status=403)
+
         products = Product.objects.all()
          # Check for CSV download request
         if 'download' in request.GET:
@@ -80,11 +83,15 @@ class CreateProductView(View):
     template_name = 'supplies/create_product.html'
 
     def get(self, request):
+        if not request.user.has_perm('supplies.create_product'):
+            return HttpResponse("You do not have permission to create a product.", status=403)
         categories = Category.objects.all()
         suppliers = Supplier.objects.all()
         return render(request, self.template_name, {'categories': categories, 'suppliers': suppliers})
 
     def post(self, request):
+        if not request.user.has_perm('supplies.create_product'):
+            return HttpResponse("You do not have permission to create a product.", status=403)
         product_name = request.POST.get('product_name')
         description = request.POST.get('description')
         price = float(request.POST.get('price'))
@@ -111,10 +118,14 @@ class ImportProductView(View):
     template_name = 'supplies/import_product.html'
 
     def get(self, request):
+        if not request.user.has_perm('supplies.import_product'):
+            return HttpResponse("You do not have permission to import product.", status=403)
         # Render the import product form
         return render(request, self.template_name)
 
     def post(self, request):
+        if not request.user.has_perm('supplies.import_product'):
+            return HttpResponse("You do not have permission to import product.", status=403)
         if 'csv_file' in request.FILES:
             csv_file = request.FILES['csv_file']
             if csv_file.name.endswith('.csv'):
@@ -152,6 +163,8 @@ class ProductDetailView(View):
     template_name = 'supplies/product_detail.html'
 
     def get(self, request, product_id):
+        if not request.user.has_perm('supplies.custom_view_product'):
+            return HttpResponse("You do not have permission to view this page.", status=403)
         product = get_object_or_404(Product, id=product_id)
         return render(request, self.template_name, {'product': product})
     
@@ -159,12 +172,16 @@ class UpdateProductView(View):
     template_name = 'supplies/update_product.html'
 
     def get(self, request, product_id):
+        if not request.user.has_perm('supplies.update_product'):
+            return HttpResponse("You do not have permission to edit this product.", status=403)
         product = get_object_or_404(Product, id=product_id)
         categories = Category.objects.all()
         suppliers = Supplier.objects.all()
         return render(request, self.template_name, {'product': product, 'categories': categories, 'suppliers': suppliers})
 
     def post(self, request, product_id):
+        if not request.user.has_perm('supplies.update_product'):
+            return HttpResponse("You do not have permission to edit this product.", status=403)
         product = get_object_or_404(Product, id=product_id)
         product.product_name = request.POST.get('product_name')
         product.description = request.POST.get('description')
@@ -178,12 +195,16 @@ class UpdateProductView(View):
 
 class DeleteProductView(View):
     def get(self, request, product_id):
+        if not request.user.has_perm('supplies.custom_delete_product'):
+            return HttpResponse("You do not have permission to delete this product.", status=403)
         product = get_object_or_404(Product, id=product_id)
         return render(request, 'supplies/delete_product.html', {'product': product})
     def post(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-        product.delete()
-        return redirect('supplies:product_list')
+         if not request.user.has_perm('supplies.custom_delete_product'):
+            return HttpResponse("You do not have permission to delete this product.", status=403)
+         product = get_object_or_404(Product, id=product_id)
+         product.delete()
+         return redirect('supplies:product_list')
 
 def create_sale(request, ):
     if request.method == 'POST':
