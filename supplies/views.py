@@ -61,8 +61,8 @@ class ProductListView(View):
                 product.description,
                 product.price,
                 product.stock_quantity,
-                product.category.cat_name,  # Assuming cat_name is the field name for the category
-                product.supplier.supplier_name        # Assuming name is the field name for the supplier
+                product.category.cat_name if product.category else 'N/A',  # Handle None for category
+                product.supplier.supplier_name if product.supplier else 'N/A'  # Handle None for supplier
             ])
 
         return response
@@ -127,9 +127,9 @@ class ImportProductView(View):
                     # Assign each value from the CSV row to a variable
                     product_name, description, price, stock_quantity, category_name, supplier_name = row
 
-                    # Get category and supplier objects
-                    category = get_object_or_404(Category, cat_name=category_name)
-                    supplier = get_object_or_404(Supplier, supplier_name=supplier_name)
+                   # Get category and supplier objects; use None if not found
+                    category = Category.objects.filter(cat_name=category_name).first()
+                    supplier = Supplier.objects.filter(supplier_name=supplier_name).first()
 
                     # Create the product
                     Product.objects.create(
