@@ -27,11 +27,15 @@
                     <button>Search</button>
                 </div>
                 <div class="user-profile">
-                    <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
+                    {{request.user.username }}<img src="{% static 'supplies/images/user-icon.png' %}" alt="{{request.user.username }}" id="profile-icon">
                     <div class="dropdown" id="dropdown-menu">
                         <div class="dropdown-item">View Profile</div>
                         <div class="dropdown-item">Settings</div>
-                        <div class="dropdown-item" onclick="logout()">Logout</div>
+                        {% if request.user.is_authenticated %}
+                        <div class="dropdown-item" onclick="logout()"><a href="{% url 'supplies:customer_logout' %}">Logout</a></div>
+                        {% else %}
+                        <div class="dropdown-item" ><a href="{% url 'supplies:customer_access' %}">Login</a></div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

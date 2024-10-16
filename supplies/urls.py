@@ -16,7 +16,7 @@ urlpatterns = [
     path('sales/create/', create_sale, name='create_sale'),
     path('customer/', CustomerListView.as_view(), name='customer_list'),
     path('customers/create/', CreateCustomerView.as_view(), name='customer_access'),
-    path('customer/login/', LoginView.as_view(), name='login'),
+    path('customer/login/', LoginView.as_view(), name='customer_access'),
     path('customer/delete/<int:customer_id>/', DeleteCustomerView.as_view(), name='delete_customer'),
     path('customer/dashboard', CustomerDashboardView.as_view(), name='customer_dashboard'),
     path('suppliers/', SupplierListView.as_view(), name='supplier_list'),
@@ -25,6 +25,7 @@ urlpatterns = [
     path('supplier/delete/<int:supplier_id>/', DeleteSupplierView.as_view(), name='delete_supplier'),
     path('stock/adjust/', adjust_stock, name='adjust_stock'),
     path('stock/alerts/', low_stock_alerts, name='low_stock_alerts'),
+    path('customer/logout/', customer_logout_view, name='customer_logout'),
 
 
 ]

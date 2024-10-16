@@ -12,6 +12,7 @@ from django.views import View
 import csv, io
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth import logout, login
 
 
 class DashboardView(View):
@@ -283,8 +284,8 @@ class LoginView(View):
                 messages.error(request, 'Invalid email or password.')
         except Customer.DoesNotExist:
             messages.error(request, 'Invalid email or password.')
-
-        return render(request, self.template_name)
+        
+            return render(request, self.template_name)
     
 class DeleteCustomerView(View):
     def get(self, request, customer_id):
@@ -394,3 +395,9 @@ def low_stock_alerts(request):
     return render(request, 'supplies/low_stock_alert.html', {'low_stock_products': low_stock_products})
 
 
+def customer_logout_view(request):
+    # Log the user out
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    # Redirect
+    return redirect('supplies:customer_access')
