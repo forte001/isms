@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView
+from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView
 
 
 app_name = 'supplies'
@@ -25,6 +25,7 @@ urlpatterns = [
     path('stock/adjust/', adjust_stock, name='adjust_stock'),
     path('stock/alerts/', low_stock_alerts, name='low_stock_alerts'),
     path('customer/logout/', customer_logout_view, name='customer_logout'),
+     path('permission-denied/', PermissionDeniedView.as_view(), name='permission_denied'),
 
 
 ]

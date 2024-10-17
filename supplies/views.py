@@ -13,6 +13,7 @@ import csv, io
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout, login
+from django.urls import reverse
 
 
 class DashboardView(View):
@@ -36,16 +37,18 @@ class ProductListView(View):
 
     def get(self, request):
         if not request.user.has_perm('supplies.custom_view_product'):
-            return HttpResponse("You do not have permission to view this page.", status=403)
-
+            return redirect('supplies:permission_denied')
+        
         products = Product.objects.all()
+
+        
          # Check for CSV download request
         if 'download' in request.GET:
             if 'sample' in request.GET:
                 return self.download_sample_csv()
             return self.download_csv(products)
 
-        return render(request, self.template_name, {'products': products})
+        return render(request, self.template_name, {'products': products, })
 
   
   ### Downloads CSV file of products
@@ -305,7 +308,10 @@ class CustomerDashboardView(View):
     template_name = 'supplies/customer_dashboard.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        customer = None
+        if request.session.get('customer_id'):
+            customer = get_object_or_404(Customer, id=request.session['customer_id'] )
+        return render(request, self.template_name, {'customer': customer})
 
 # Customer multi action view manages creation of customer account and login 
 class CustomerMultiActionView(View):
@@ -422,6 +428,20 @@ def low_stock_alerts(request):
 def customer_logout_view(request):
     # Log the user out
     logout(request)
+    # Clear the session
+    request.session.flush() 
     messages.success(request, "You have been logged out successfully.")
     # Redirect
     return redirect('supplies:customer_access')
+
+
+class PermissionDeniedView(View):
+    template_name = 'supplies/permission_denied.html'
+
+    def get(self, request):
+        message = "You do not have permission to view this page."
+        referrer_url = request.META.get('HTTP_REFERER', 'supplies/customer/dashboard')
+        return render(request, self.template_name, {
+            'message': message,
+            'referrer_url': referrer_url,
+        })

@@ -2,8 +2,18 @@
 {% load static %}
 {% block title %}Product list{% endblock %}
 {% block content %}
-<h2>Product List</h2>
 
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <p>{{ message }}</p>
+                <a href="{{ referrer_url }}" >Back</a>
+            </li>
+            {% endfor %}
+    </ul>
+{% else %}
+<h2>Product List</h2>
 <div class="button-row">
     <a href="{% url 'supplies:adjust_stock' %}" class="btn">Adjust Stock</a>
     <a href="{% url 'supplies:low_stock_alerts' %}" class="btn">Low Stock Alerts</a>
@@ -64,5 +74,5 @@
         </tbody>
     </table>
 </div>
-
+{% endif %}
 {% endblock %}
