@@ -36,11 +36,7 @@ class ProductListView(View):
     template_name = 'supplies/product_list.html'
 
     def get(self, request):
-        if not request.user.has_perm('supplies.custom_view_product'):
-            return redirect('supplies:permission_denied')
-        
         products = Product.objects.all()
-
         
          # Check for CSV download request
         if 'download' in request.GET:
@@ -48,7 +44,10 @@ class ProductListView(View):
                 return self.download_sample_csv()
             return self.download_csv(products)
 
-        return render(request, self.template_name, {'products': products, })
+        return render(request, self.template_name, {'products': products,
+                                                    'can_update': request.user.has_perm('supplies.custom_update_product'),
+            'can_delete': request.user.has_perm('supplies.custom_delete_product'),
+              })
 
   
   ### Downloads CSV file of products
@@ -167,8 +166,6 @@ class ProductDetailView(View):
     template_name = 'supplies/product_detail.html'
 
     def get(self, request, product_id):
-        if not request.user.has_perm('supplies.custom_view_product'):
-            return HttpResponse("You do not have permission to view this page.", status=403)
         product = get_object_or_404(Product, id=product_id)
         return render(request, self.template_name, {'product': product})
     
@@ -177,7 +174,7 @@ class UpdateProductView(View):
 
     def get(self, request, product_id):
         if not request.user.has_perm('supplies.update_product'):
-            return HttpResponse("You do not have permission to edit this product.", status=403)
+            return redirect('supplies:permission_denied')
         product = get_object_or_404(Product, id=product_id)
         categories = Category.objects.all()
         suppliers = Supplier.objects.all()
@@ -185,7 +182,7 @@ class UpdateProductView(View):
 
     def post(self, request, product_id):
         if not request.user.has_perm('supplies.update_product'):
-            return HttpResponse("You do not have permission to edit this product.", status=403)
+            return redirect('supplies:permission_denied')
         product = get_object_or_404(Product, id=product_id)
         product.product_name = request.POST.get('product_name')
         product.description = request.POST.get('description')
@@ -199,13 +196,13 @@ class UpdateProductView(View):
 
 class DeleteProductView(View):
     def get(self, request, product_id):
-        if not request.user.has_perm('supplies.custom_delete_product'):
-            return HttpResponse("You do not have permission to delete this product.", status=403)
+        if not request.user.has_perm('supplies.update_product'):
+            return redirect('supplies:permission_denied')
         product = get_object_or_404(Product, id=product_id)
         return render(request, 'supplies/delete_product.html', {'product': product})
     def post(self, request, product_id):
-         if not request.user.has_perm('supplies.custom_delete_product'):
-            return HttpResponse("You do not have permission to delete this product.", status=403)
+         if not request.user.has_perm('supplies.update_product'):
+            return redirect('supplies:permission_denied')
          product = get_object_or_404(Product, id=product_id)
          product.delete()
          return redirect('supplies:product_list')
@@ -439,9 +436,11 @@ class PermissionDeniedView(View):
     template_name = 'supplies/permission_denied.html'
 
     def get(self, request):
-        message = "You do not have permission to view this page."
-        referrer_url = request.META.get('HTTP_REFERER', 'supplies/customer/dashboard')
-        return render(request, self.template_name, {
-            'message': message,
-            'referrer_url': referrer_url,
-        })
+        # message = "You do not have permission to view this page."
+       
+        return render(request, self.template_name,
+        #  {
+        #     'message': message,
+        #     'referrer_url': referrer_url,
+        # }
+        )

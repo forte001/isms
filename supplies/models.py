@@ -23,10 +23,10 @@ class Product(models.Model):
         class Meta:
             permissions = [
             ("create_product", "Can create product"),
-            ("mport_product", "Can import product"),
+            ("import_product", "Can import product"),
             ("custom_view_product", "Can custom view product"),
-            ("update_product", "Can update product"),
-            ("custom_delete_product", "Can custom_delete product"),
+            ("custom_update_product", "Can custom update product"),
+            ("custom_delete_product", "Can custom delete product"),
         ]
 
         def __str__(self):

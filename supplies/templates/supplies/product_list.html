@@ -14,6 +14,7 @@
     </ul>
 {% else %}
 <h2>Product List</h2>
+{% if can_update or can_delete %}
 <div class="button-row">
     <a href="{% url 'supplies:adjust_stock' %}" class="btn">Adjust Stock</a>
     <a href="{% url 'supplies:low_stock_alerts' %}" class="btn">Low Stock Alerts</a>
@@ -31,7 +32,7 @@
         </div>
     </div>
 </div>
-
+{% endif %}
 
 
 
@@ -45,7 +46,9 @@
                 <th>Description</th>
                 <th>Price</th>
                 <th>Stock Quantity</th>
+                {% if can_update or can_delete %}
                 <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -56,6 +59,7 @@
                 <td>{{ product.description }}</td>
                 <td>N{{ product.price }}</td>
                 <td>{{ product.stock_quantity }}</td>
+                {% if can_update%}
                 <td>
                     
                     <div class="dropdown-container">
@@ -69,6 +73,7 @@
 
 
                 </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
