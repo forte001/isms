@@ -276,14 +276,11 @@ class CustomerLoginView(View):
     def post(self, request):
         email = request.POST.get('login_email')
         password = request.POST.get('login_password')
-        print(f"Attempting to log in with email: {email}")
 
         try:
             customer = Customer.objects.get(customer_email=email)
             if check_password(password, customer.password):
-                print(f"Password entered: {password}")
-                request.session['customer_id'] = customer.id  # Store customer ID in session
-                print(f"Customer found: {customer}")  # Check if customer is found
+                request.session['customer_id'] = customer.id  # Store customer ID in session 
                 return redirect('supplies:customer_dashboard')  # Redirect to the customer Dashboard
             else:
                 messages.error(request, 'Invalid email or password.')
