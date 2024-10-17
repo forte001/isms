@@ -238,12 +238,14 @@ class CustomerListView(View):
         return render(request, self.template_name, {'customers': customers})
 
 class CreateCustomerView(View):
-    template_name = 'supplies/customer_access.html'
+    # template_name = 'supplies/customer_access.html'
 
     def get(self, request):
         return render(request, self.template_name)
 
     def post(self, request):
+        
+
         customer_first_name = request.POST.get('customer_first_name')
         customer_last_name = request.POST.get('customer_last_name')
         customer_email = request.POST.get('customer_email')
@@ -268,12 +270,12 @@ class CreateCustomerView(View):
             messages.success(request, 'Account created successfully!')
             return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
-class LoginView(View):
-    template_name = 'supplies/customer_access.html'  # Use the same template for simplicity
+class CustomerLoginView(View):
+    # template_name = 'supplies/customer_access.html'  # Use the same template for simplicity
 
     def post(self, request):
-        email = request.POST.get('customer_email')
-        password = request.POST.get('password')
+        email = request.POST.get('login_email')
+        password = request.POST.get('login_password')
 
         try:
             customer = Customer.objects.get(customer_email=email)
@@ -285,7 +287,7 @@ class LoginView(View):
         except Customer.DoesNotExist:
             messages.error(request, 'Invalid email or password.')
         
-            return render(request, self.template_name)
+        return redirect('supplies:customer_access')
     
 class DeleteCustomerView(View):
     def get(self, request, customer_id):
@@ -302,8 +304,28 @@ class CustomerDashboardView(View):
 
     def get(self, request):
         return render(request, self.template_name)
-    
 
+# Customer multi action view manages creation of customer account and login 
+class CustomerMultiActionView(View):
+    template_name = 'supplies/customer_access.html'
+    
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        if 'create_customer' in request.POST:
+            return CreateCustomerView.as_view()(request)
+
+        elif 'login_customer' in request.POST:
+            return CustomerLoginView.as_view()(request)
+
+        elif 'customer_pw_reset' in request.POST:
+            pass
+
+        return redirect('supplies:customer_access')
+        
+        
+    
 
 class SupplierListView(View):
     template_name = 'supplies/supplier_list.html'

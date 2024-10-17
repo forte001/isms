@@ -41,7 +41,7 @@
                 <label for="password" class="">Password:</label>
                 <input class="input-text" type="password" id="password" name="password" required>
 
-                <button class="btn" type="submit">Register</button>
+                <button class="btn" type="submit" name="create_customer">Register</button>
             </form>
         </div>
 
@@ -52,12 +52,12 @@
         <form method="post" class="form">
             {% csrf_token %}
             <label for="login-email" class="label">Email:</label>
-            <input class="input-email" type="email" id="customer_email" required>
+            <input class="input-email" type="email" id="login_email" name="login-email" required>
 
             <label for="login-password" class="label">Password:</label>
-            <input class="input-text" type="password" id="password" required>
+            <input class="input-text" type="password" id="login-password" name="login-password" required>
 
-            <button class="btn" type="submit">Login</button>
+            <button class="btn" type="submit" name="login_customer">Login</button>
         </form>
     </div>
 
@@ -68,7 +68,7 @@
             <label for="reset-email" class="label">Email:</label>
             <input class="input-email" type="email" id="customer_email" required>
 
-            <button class="btn" type="submit">Reset Password</button>
+            <button class="btn" type="submit" name="customer_pw_reset">Reset Password</button>
         </form>
     </div>
 </div>
