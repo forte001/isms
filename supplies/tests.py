@@ -97,7 +97,7 @@ class CreateProductViewTests(BaseTestCase):
         super().setUp()
 
     def test_create_product_view(self):
-        response = self.client.get(reverse('supplies:create_product'))  # Update with the actual name
+        response = self.client.get(reverse('supplies:create_product')) 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'supplies/create_product.html')
 
@@ -110,7 +110,7 @@ class CreateProductViewTests(BaseTestCase):
             'category_id': self.category.id,
             'supplier_id': self.supplier.id,
         })
-        self.assertRedirects(response, reverse('supplies:product_list'))  # Update with the actual name
+        self.assertRedirects(response, reverse('supplies:product_list'))  
         self.assertTrue(Product.objects.filter(product_name='New Product').exists())
 
 class CreateCustomerViewTests(TestCase):
@@ -124,7 +124,7 @@ class CreateCustomerViewTests(TestCase):
             customer_phone='1234567890',
             password='hashed_password'  # Hashes password
         )
-        self.url = reverse('supplies:customer_access')  # Redirects here
+        self.url = reverse('supplies:customer_dashboard')  # Redirects here
 
     def test_email_already_exists(self):
         response = self.client.post(self.url, {

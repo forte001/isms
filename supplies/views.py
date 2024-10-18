@@ -44,8 +44,9 @@ class ProductListView(View):
                 return self.download_sample_csv()
             return self.download_csv(products)
 
-        return render(request, self.template_name, {'products': products,
-                                                    'can_update': request.user.has_perm('supplies.custom_update_product'),
+        return render(request, self.template_name, {
+            'products': products,
+            'can_update': request.user.has_perm('supplies.custom_update_product'),
             'can_delete': request.user.has_perm('supplies.custom_delete_product'),
               })
 
@@ -238,7 +239,7 @@ class CustomerListView(View):
         return render(request, self.template_name, {'customers': customers})
 
 class CreateCustomerView(View):
-    # template_name = 'supplies/customer_access.html'
+    template_name = 'supplies/customer_access.html'
 
     def get(self, request):
         return render(request, self.template_name)
@@ -271,7 +272,6 @@ class CreateCustomerView(View):
             return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
 class CustomerLoginView(View):
-    # template_name = 'supplies/customer_access.html'  # Use the same template for simplicity
 
     def post(self, request):
         email = request.POST.get('login_email')

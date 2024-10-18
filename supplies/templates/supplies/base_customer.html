@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Inventory Manager{% endblock %}</title>
+    <title>{% block title %} Shopping Manager {% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'supplies/styles.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -13,7 +13,7 @@
         <div class="sidebar">
             <h2>Shopping Manager</h2>
             <ul>
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="{% url 'supplies:customer_dashboard'%}">Dashboard</a></li>
                 <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
                 <li><a href="#">Transactions</a></li>
                 <li><a href="#">Customers</a></li>
@@ -27,7 +27,7 @@
                     <button>Search</button>
                 </div>
                 <div class="user-profile">
-                    {% if customer %}
+                    {% if customer.is_authenticated %}
                     {{ customer.customer_first_name }} <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
                     <div class="dropdown" id="dropdown-menu">
                         <div class="dropdown-item">View Profile</div>
