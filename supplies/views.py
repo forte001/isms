@@ -13,6 +13,7 @@ import csv, io
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout, login
+from django.contrib.auth.views import LoginView
 from django.urls import reverse
 
 
@@ -271,7 +272,7 @@ class CreateCustomerView(View):
             messages.success(request, 'Account created successfully!')
             return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
-class CustomerLoginView(View):
+class CustomerLoginView(LoginView):
 
     def post(self, request):
         email = request.POST.get('login_email')
