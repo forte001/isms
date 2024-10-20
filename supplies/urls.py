@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import *
 from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView
-
+# from django.contrib.auth import views as auth_views
 
 app_name = 'supplies'
 
