@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 
     # @admin.display(
@@ -38,7 +40,7 @@ class Category(models.Model):
     cat_name = models.CharField(max_length=100)
     cat_description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -56,12 +58,12 @@ class Supplier(models.Model):
     
 
 ### Customer Model
-class Customer(models.Model):
-    customer_first_name = models.CharField(max_length=100)
-    customer_last_name = models.CharField(max_length=100)
-    customer_email = models.EmailField()
+class Customer(AbstractUser):
+    username = models.CharField(max_length=150, unique=True, null=True)
+    customer_first_name = models.CharField(max_length=100, default='customer_first_name')
+    customer_last_name = models.CharField(max_length=100, default='customer_last_name')
+    customer_email = models.EmailField(unique=True)
     customer_phone = models.CharField(max_length=20)
-    password = models.CharField(max_length=128, default='password')
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

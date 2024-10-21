@@ -272,7 +272,7 @@ class CreateCustomerView(View):
             messages.success(request, 'Account created successfully!')
             return redirect('supplies:customer_dashboard')  # Redirect to customer list after saving
 
-class CustomerLoginView(LoginView):
+class CustomerLoginView(View):
 
     def post(self, request):
         email = request.POST.get('login_email')
@@ -280,16 +280,17 @@ class CustomerLoginView(LoginView):
 
         try:
             customer = Customer.objects.get(customer_email=email)
-            if check_password(password, customer.password):
-                request.session['customer_id'] = customer.id  # Store customer ID in session 
+
+            # Check if the password is correct
+            if customer.check_password(password):
+                login(request, customer)  # Log the user in
+                request.session['customer_id'] = customer.id  # Store customer ID in session
                 return redirect('supplies:customer_dashboard')  # Redirect to the customer Dashboard
             else:
                 messages.error(request, 'Invalid email or password.')
         except Customer.DoesNotExist:
             messages.error(request, 'Invalid email or password.')
-            
 
-        
         return redirect('supplies:customer_access')
     
 class DeleteCustomerView(View):

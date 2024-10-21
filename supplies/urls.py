@@ -16,7 +16,6 @@ urlpatterns = [
     path('sales/create/', create_sale, name='create_sale'),
     path('customer/', CustomerListView.as_view(), name='customer_list'),
     path('customers/access', CustomerMultiActionView.as_view(), name='customer_access'),
-    path('customer/login/', CustomerLoginView.as_view(), name='customer_login'),
     path('customer/delete/<int:customer_id>/', DeleteCustomerView.as_view(), name='delete_customer'),
     path('customer/dashboard', CustomerDashboardView.as_view(), name='customer_dashboard'),
     path('suppliers/', SupplierListView.as_view(), name='supplier_list'),
