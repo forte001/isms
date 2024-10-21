@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView
+from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView, AdjustStockView
 # from django.contrib.auth import views as auth_views
 
 app_name = 'supplies'
@@ -22,7 +22,7 @@ urlpatterns = [
     path('suppliers/create/', CreateSupplierView.as_view(), name='create_supplier'),
     path('supplier/update/<int:supplier_id>', UpdateSupplierView.as_view(), name='update_supplier'),
     path('supplier/delete/<int:supplier_id>/', DeleteSupplierView.as_view(), name='delete_supplier'),
-    path('stock/adjust/', adjust_stock, name='adjust_stock'),
+    path('stock/adjust/<int:product_id>/', AdjustStockView.as_view(), name='adjust_stock'),
     path('stock/alerts/', low_stock_alerts, name='low_stock_alerts'),
     path('customer/logout/', customer_logout_view, name='customer_logout'),
      path('permission-denied/', PermissionDeniedView.as_view(), name='permission_denied'),

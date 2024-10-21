@@ -16,7 +16,7 @@
 <h2>Product List</h2>
 {% if can_update or can_delete %}
 <div class="button-row">
-    <a href="{% url 'supplies:adjust_stock' %}" class="btn">Adjust Stock</a>
+    <a href="{% url 'supplies:adjust_stock' product.id %}" class="btn">Adjust Stock</a>
     <a href="{% url 'supplies:low_stock_alerts' %}" class="btn">Low Stock Alerts</a>
     <a href="{% url 'supplies:create_product' %}" class="btn">Create Product</a>
     <!-- <a href="#" class="btn">Action 1</a>

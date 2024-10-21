@@ -396,26 +396,53 @@ class DeleteSupplierView(View):
 
 
 
+class AdjustStockView(View):
+    template_name = 'supplies/stock_adjustment.html'
 
-def adjust_stock(request):
-    if request.method == 'POST':
-        product_id = request.POST.get('product_id')
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, self.template_name, {'products': products} )
+
+    def post(self, request, product_id):
         quantity_adjusted = int(request.POST.get('quantity_adjusted'))
         reason = request.POST.get('reason')
-        
-        product = Product.objects.get(id=product_id)
-        
+
+        product = get_object_or_404(Product, id=product_id)
+
         # Update stock quantity
         product.stock_quantity += quantity_adjusted
         product.save()
 
         # Record the stock adjustment
         StockAdjustment.objects.create(product=product, quantity_adjusted=quantity_adjusted, reason=reason)
-
+        
         return redirect('supplies:product_list')
 
-    products = Product.objects.all()
-    return render(request, 'supplies/stock_adjustment.html', {'products': products})
+    
+
+
+
+
+# def adjust_stock(request):
+#     if request.method == 'POST':
+#         product_id = request.POST.get('product_id')
+#         quantity_adjusted = int(request.POST.get('quantity_adjusted'))
+#         reason = request.POST.get('reason')
+        
+#         product = Product.objects.get(id=product_id)
+        
+#         # Update stock quantity
+#         product.stock_quantity += quantity_adjusted
+#         product.save()
+
+#         # Record the stock adjustment
+#         StockAdjustment.objects.create(product=product, quantity_adjusted=quantity_adjusted, reason=reason)
+#         products = Product.objects.all()
+
+#         return redirect('supplies:product_list', {'products': products})
+
+#     products = Product.objects.all()
+#     return render(request, 'supplies/stock_adjustment.html', {'products': products})
 
 ## Low stock alert view
 def low_stock_alerts(request):
