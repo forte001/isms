@@ -15,6 +15,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout, login
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+
 
 
 class DashboardView(View):
@@ -303,6 +305,7 @@ class DeleteCustomerView(View):
         customer.delete()
         return redirect('supplies:customer_list')
     
+# @login_required   
 class CustomerDashboardView(View):
     template_name = 'supplies/customer_dashboard.html'
 
@@ -403,7 +406,8 @@ class AdjustStockView(View):
         products = Product.objects.all()
         return render(request, self.template_name, {'products': products} )
 
-    def post(self, request, product_id):
+    def post(self, request):
+        product_id = request.POST.get('product_id')
         quantity_adjusted = int(request.POST.get('quantity_adjusted'))
         reason = request.POST.get('reason')
 
@@ -418,32 +422,7 @@ class AdjustStockView(View):
         
         return redirect('supplies:product_list')
 
-    
-
-
-
-
-# def adjust_stock(request):
-#     if request.method == 'POST':
-#         product_id = request.POST.get('product_id')
-#         quantity_adjusted = int(request.POST.get('quantity_adjusted'))
-#         reason = request.POST.get('reason')
-        
-#         product = Product.objects.get(id=product_id)
-        
-#         # Update stock quantity
-#         product.stock_quantity += quantity_adjusted
-#         product.save()
-
-#         # Record the stock adjustment
-#         StockAdjustment.objects.create(product=product, quantity_adjusted=quantity_adjusted, reason=reason)
-#         products = Product.objects.all()
-
-#         return redirect('supplies:product_list', {'products': products})
-
-#     products = Product.objects.all()
-#     return render(request, 'supplies/stock_adjustment.html', {'products': products})
-
+   
 ## Low stock alert view
 def low_stock_alerts(request):
     threshold = 10  # Define your low stock threshold

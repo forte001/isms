@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    {% if user.is_authenticated and user.is_customer %}
     <div class="container">
         <div class="sidebar">
             <h2>Shopping Manager</h2>
@@ -46,6 +47,8 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <a href="{% url 'supplies:customer_access %}"></a>
 
     <script>
         $(document).ready(function() {
