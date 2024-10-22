@@ -15,10 +15,11 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout, login
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 
 
-
+@method_decorator(permission_required('supplies.can_access_admin_dashboard', raise_exception=True), name='dispatch')
 class DashboardView(View):
     template_name = 'supplies/index.html'
 
@@ -233,13 +234,13 @@ def create_sale(request, ):
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-
+@method_decorator(permission_required('supplies.can_view_customer', raise_exception=True), name='dispatch')
 class CustomerListView(View):
     template_name = 'supplies/customer_list.html'
 
     def get(self, request):
         customers = Customer.objects.all()
-        return render(request, self.template_name, {'customers': customers})
+        return render(request, self.template_name, {'customers': customers, 'user': request.user})
 
 class CreateCustomerView(View):
     template_name = 'supplies/customer_access.html'
@@ -294,7 +295,8 @@ class CustomerLoginView(View):
             messages.error(request, 'Invalid email or password.')
 
         return redirect('supplies:customer_access')
-    
+
+@method_decorator(permission_required('supplies.can_delete_customer', raise_exception=True), name='dispatch')   
 class DeleteCustomerView(View):
     def get(self, request, customer_id):
         customer = get_object_or_404(Customer, id=customer_id)
@@ -305,7 +307,7 @@ class DeleteCustomerView(View):
         customer.delete()
         return redirect('supplies:customer_list')
     
-# @login_required   
+@method_decorator(login_required, name='dispatch')
 class CustomerDashboardView(View):
     template_name = 'supplies/customer_dashboard.html'
 

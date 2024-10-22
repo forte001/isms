@@ -7,11 +7,13 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
 
-    # @admin.display(
-    #     boolean=True,
-    #     ordering='created_by',
-    #     description='Items added by',
-    # )
+
+### Special permission for Admin dashboard
+class AdminPermission(models.Model):
+    class Meta:
+        permissions = [
+            ("can_access_admin_dashboard", "Can access the admin dashboard"),
+        ]
 
 ### Product Model
 class Product(models.Model):
@@ -52,6 +54,12 @@ class Supplier(models.Model):
     supplier_name = models.CharField(max_length=255)
     supplier_email = models.EmailField()
     supplier_phone = models.CharField(max_length=20)
+    
+
+    class META:
+        permissions = [
+            ("", "")
+        ]
 
     def __str__(self):
         return self.supplier_name
@@ -66,6 +74,12 @@ class Customer(AbstractUser):
     customer_phone = models.CharField(max_length=20)
     created_at = models.DateTimeField(default=timezone.now)
 
+    class Meta:
+        permissions = [
+            ('can_view_profile', 'Can view profile'),
+            ('can_edit_profile', 'Can edit profile'),
+            ('can_delete_customer', 'Can delete customer')
+        ]
     def __str__(self):
         return f"{self.customer_first_name} {self.customer_last_name}"
     
