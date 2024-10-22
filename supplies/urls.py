@@ -6,7 +6,7 @@ from .views import ProductListView, CreateProductView, ProductDetailView, Update
 app_name = 'supplies'
 
 urlpatterns = [
-    path("", DashboardView.as_view(), name="index"),
+    path("admin/dashboard/", DashboardView.as_view(), name="admin_dashboard"),
     path("products/", ProductListView.as_view(), name='product_list'),
     path('product/create/', CreateProductView.as_view(), name='create_product'),
     path('product/import/', ImportProductView.as_view(), name='import_products'),

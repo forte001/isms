@@ -19,9 +19,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 
 
+
 @method_decorator(permission_required('supplies.can_access_admin_dashboard', raise_exception=True), name='dispatch')
 class DashboardView(View):
-    template_name = 'supplies/index.html'
+    template_name = 'supplies/admin_dashboard.html'
 
     def get(self, request):
         total_suppliers = Supplier.objects.count()
@@ -268,7 +269,7 @@ class CreateCustomerView(View):
             customer_last_name=customer_last_name,
             customer_email=customer_email,
             customer_phone=customer_phone,
-            password=make_password(password)  # Hash the password
+            password = make_password(password)  # Hash the password
         )
             
             customer.save()
