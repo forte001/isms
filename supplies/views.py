@@ -3,6 +3,7 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
+from django.http.response import HttpResponseRedirect
 from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
@@ -17,7 +18,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -245,16 +246,24 @@ def create_sale(request, ):
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-@method_decorator(permission_required('supplies.can_view_customer', raise_exception=True), name='dispatch')
-class CustomerListView(View):
+
+class CustomerListView(PermissionRequiredMixin, View):
     template_name = 'supplies/customer_list.html'
+    permission_required = 'supplies:view_customer'
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('supplies:customer_dashboard')
+        else:
+            return redirect('supplies:customer_access')
 
     def get(self, request):
         customers = Customer.objects.all()
         return render(request, self.template_name, {'customers': customers, 'user': request.user})
 
-class CreateCustomerView(View):
+class CreateCustomerView( View):
     template_name = 'supplies/customer_access.html'
+
 
     def get(self, request):
         return render(request, self.template_name)
@@ -350,8 +359,15 @@ class CustomerMultiActionView(View):
         
     
 
-class SupplierListView(View):
+class SupplierListView(PermissionRequiredMixin, View):
     template_name = 'supplies/supplier_list.html'
+    permission_required = 'supplies.view_supplier'
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('supplies:customer_dashboard')
+        else:
+            return redirect('supplies:customer_access')
 
     def get(self, request):
         suppliers = Supplier.objects.all()
