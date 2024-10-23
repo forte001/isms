@@ -17,12 +17,22 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
-
-@method_decorator(permission_required('supplies.can_access_admin_dashboard', raise_exception=True), name='dispatch')
-class DashboardView(View):
+# @method_decorator(login_required, name='dispatch')
+# @method_decorator(permission_required('supplies.can_access_admin_dashboard', raise_exception=True), name='dispatch')
+class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'supplies/admin_dashboard.html'
+
+    def test_func(self):
+        return self.request.user.has_perm('supplies.can_access_admin_dashboard')
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('supplies:customer_dashboard')
+        else:
+            return redirect('supplies:customer_access')
 
     def get(self, request):
         total_suppliers = Supplier.objects.count()
@@ -30,12 +40,12 @@ class DashboardView(View):
         total_sales = Sale.objects.aggregate(total=Sum('total_price'))['total'] or 0
 
         return render(request, self.template_name, {
-        'total_suppliers': total_suppliers,
-        'total_products': total_products,
-        'total_sales': total_sales,
-        'recent_transactions': Sale.objects.all().order_by('-date')[:5],
+            'total_suppliers': total_suppliers,
+            'total_products': total_products,
+            'total_sales': total_sales,
+            'recent_transactions': Sale.objects.all().order_by('-date')[:5],
         })
-
+    
 
 class ProductListView(View):
     template_name = 'supplies/product_list.html'
