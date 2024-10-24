@@ -27,8 +27,8 @@
                     <button>Search</button>
                 </div>
                 <div class="user-profile">
-                    {% if customer.is_authenticated %}
-                    {{ customer.customer_first_name }} <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
+                    {% if user.is_authenticated %}
+                        {{ customer.customer_first_name }} <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
                     <div class="dropdown" id="dropdown-menu">
                         <div class="dropdown-item">View Profile</div>
                         <div class="dropdown-item">Settings</div>
@@ -36,6 +36,7 @@
                         {% else %}
                         <div class="dropdown-item" ><a href="{% url 'supplies:customer_access' %}">Login</a></div>
                         {% endif %}
+
                     </div>
                 </div>
             </div>

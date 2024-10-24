@@ -47,7 +47,7 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
             'recent_transactions': Sale.objects.all().order_by('-date')[:5],
         })
     
-
+@method_decorator(login_required, name='dispatch')
 class ProductListView(View):
     template_name = 'supplies/product_list.html'
 
