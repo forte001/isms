@@ -11,6 +11,7 @@
         <thead>
             <th>Product Name</th>
             <th>Current Stock</th>
+            <th>Actions</th>
         </thead>
         <tbody>
            
@@ -18,6 +19,7 @@
             <tr style="color: red;">
                 <td>{{ product.product_name }}</td>
                 <td>{{ product.stock_quantity }}</td>
+                <td><a href="{% url 'supplies:adjust_stock'%}?id=product_id" class="btn">Adjust Stock</a></td>
             </tr>
             {% endfor %}
         </tbody>
