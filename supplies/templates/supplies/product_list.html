@@ -46,9 +46,9 @@
                 <th>Description</th>
                 <th>Price</th>
                 <th>Stock Quantity</th>
-                {% if can_update or can_delete %}
+                
                 <th>Actions</th>
-                {% endif %}
+                
             </tr>
         </thead>
         <tbody>
@@ -59,21 +59,28 @@
                 <td>{{ product.description }}</td>
                 <td>N{{ product.price }}</td>
                 <td>{{ product.stock_quantity }}</td>
-                {% if can_update%}
+                
                 <td>
                     
                     <div class="dropdown-container">
                         <button class="dropbtn">Select an Action</button>
                         <div class="dropdown-content">
+                            {% if can_update or can_delete %}
                             <a href="{% url 'supplies:update_product' product.id %}">Update Product</a>
                             <a href="{% url 'supplies:delete_product' product.id %}">Delete Product</a>
+                            {% endif %}
+                            {% if request.user.is_customer %}
+                            <a href="{% url 'supplies:create_sale' %}">Buy Product</a>
+                            {% endif %}
                             
                         </div>
                     </div>
 
 
                 </td>
-                {% endif %}
+               
+                    
+                   
             </tr>
             {% endfor %}
         </tbody>
