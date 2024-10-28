@@ -3,50 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Inventory Manager{% endblock %}</title>
+    {% block title %}
+    {% if request.user.is_customer %}
+        Shopping Manager
+    {% elif request.user.is_admin %}
+        Inventory Manager
+    {% endif %}
+    {% endblock %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'supplies/styles.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <h2>Inventory Manager</h2>
-            <ul>
-                <li><a href="{% url 'supplies:admin_dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
-                <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
-                <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
-                <li><a href="#">Transactions</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </div>
-        <div class="content">
-            <div class="header">
-                <div class="search-box">
-                    <input type="text" placeholder="Search...">
-                    <button>Search</button>
-                </div>
-                <div class="user-profile">
-                    {{request.user.username }}<img src="{% static 'supplies/images/user-icon.png' %}" alt="{{request.user.username }}" id="profile-icon">
-                    <div class="dropdown" id="dropdown-menu">
-                        <div class="dropdown-item">View Profile</div>
-                        <div class="dropdown-item">Settings</div>
-                        {% if request.user.is_authenticated %}
-                        <div class="dropdown-item" onclick="logout()"><a href="{% url 'supplies:customer_logout' %}">Logout</a></div>
+        {% if request.user.is_authenticated %}
+            <div class="sidebar">
+                <h2>{% if request.user.is_customer %}Shopping Manager{% else %}Inventory Manager{% endif %}</h2>
+                <ul>
+                    {% if request.user.is_customer and request.user.username != 'None' %}
+                        <li><a href="{% url 'supplies:customer_dashboard' %}">Customer Dashboard</a></li>
+                        <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
+                    {% else %}
+                        <li><a href="{% url 'supplies:admin_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
+                        <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
+                    {% endif %}
+                    <li><a href="#">Transactions</a></li>
+                    <li><a href="{% url 'supplies:customer_logout' %}">Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="content">
+                <div class="header">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search...">
+                        <button>Search</button>
+                    </div>
+                    <div class="user-profile">
+                        {% if request.user.is_customer %}
+                            {{ customer.customer_first_name }} 
                         {% else %}
-                        <div class="dropdown-item" ><a href="{% url 'supplies:customer_access' %}">Login</a></div>
+                            {{ request.user.username }}
                         {% endif %}
+                        <img src="{% static 'images/user-icon.png' %}" alt="User Profile" id="profile-icon">
+                        <div class="dropdown" id="dropdown-menu">
+                            <div class="dropdown-item">View Profile</div>
+                            <div class="dropdown-item">Settings</div>
+                            <div class="dropdown-item" onclick="logout()">
+                                <a href="{% url 'supplies:customer_logout' %}">Logout</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="main-content">
+                    {% block content %}
+                    <!-- Main content will go here -->
+                    {% endblock %}
+                </div>
             </div>
-            <div class="main-content">
-                {% block content %}
-                <!-- Main content will go here -->
-                {% endblock %}
+        {% else %}
+            <div class="user-profile">
+                <div class="dropdown-item"><a href="{% url 'supplies:customer_access' %}">Login</a></div>
             </div>
-        </div>
+        {% endif %}
     </div>
+    
 
     <script>
         $(document).ready(function() {
@@ -68,3 +89,4 @@
     <script src="https://unpkg.com/htmx.org@1.8.4"></script>
 </body>
 </html>
+
