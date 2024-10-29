@@ -30,7 +30,7 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.has_perm('supplies.can_access_admin_dashboard')
 
     def handle_no_permission(self):
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and self.request.user.username != None:
             return redirect('supplies:customer_dashboard')
         else:
             return redirect('supplies:customer_access')
@@ -272,6 +272,7 @@ class CreateCustomerView( View):
         
 
         customer_first_name = request.POST.get('customer_first_name')
+        username = customer_first_name
         customer_last_name = request.POST.get('customer_last_name')
         customer_email = request.POST.get('customer_email')
         customer_phone = request.POST.get('customer_phone')
@@ -285,6 +286,7 @@ class CreateCustomerView( View):
         # Create a new Customer object and save it to the database
             customer = Customer(
             customer_first_name=customer_first_name,
+            username =username,
             customer_last_name=customer_last_name,
             customer_email=customer_email,
             customer_phone=customer_phone,

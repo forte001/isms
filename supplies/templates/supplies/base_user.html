@@ -18,7 +18,7 @@
     <div class="container">
         {% if request.user.is_authenticated %}
             <div class="sidebar">
-                <h2>{% if request.user.is_customer %}Shopping Manager{% else %}Inventory Manager{% endif %}</h2>
+                <h2>{% if request.user.is_customer %}Shopping Manager{% elif request.user.is_admin %}Inventory Manager{% endif %}</h2>
                 <ul>
                     {% if request.user.is_customer and request.user.username != 'None' %}
                         <li><a href="{% url 'supplies:customer_dashboard' %}">Customer Dashboard</a></li>
