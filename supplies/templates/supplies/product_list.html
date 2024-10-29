@@ -68,7 +68,7 @@
                             <a href="{% url 'supplies:update_product' product.id %}">Update Product</a>
                             <a href="{% url 'supplies:delete_product' product.id %}">Delete Product</a>
                             {% endif %}
-                            {% if request.user.is_customer %}
+                            {% if not request.user.is_staff %}
                             <a href="{% url 'supplies:create_sale' %}">Buy Product</a>
                             {% endif %}
                             

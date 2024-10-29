@@ -6,7 +6,7 @@
     {% block title %}
     {% if request.user.is_customer %}
         Shopping Manager
-    {% elif request.user.is_admin %}
+    {% else %}
         Inventory Manager
     {% endif %}
     {% endblock %}
@@ -18,16 +18,17 @@
     <div class="container">
         {% if request.user.is_authenticated %}
             <div class="sidebar">
-                <h2>{% if request.user.is_customer %}Shopping Manager{% elif request.user.is_admin %}Inventory Manager{% endif %}</h2>
+                <h2>{% if not request.user.is_staff %}Shopping Manager{% else %}Inventory Manager{% endif %}</h2>
                 <ul>
-                    {% if request.user.is_customer and request.user.username != 'None' %}
+                    {% if not request.user.is_staff%}
                         <li><a href="{% url 'supplies:customer_dashboard' %}">Customer Dashboard</a></li>
-                        <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
+                        
                     {% else %}
                         <li><a href="{% url 'supplies:admin_dashboard' %}">Dashboard</a></li>
                         <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
                         <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
                     {% endif %}
+                    <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
                     <li><a href="#">Transactions</a></li>
                     <li><a href="{% url 'supplies:customer_logout' %}">Logout</a></li>
                 </ul>
@@ -40,7 +41,7 @@
                         <button>Search</button>
                     </div>
                     <div class="user-profile">
-                        {% if request.user.is_customer %}
+                        {% if not request.user.is_staff %}
                             {{ customer.customer_first_name }} 
                         {% else %}
                             {{ request.user.username }}

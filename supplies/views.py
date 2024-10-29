@@ -30,7 +30,7 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.has_perm('supplies.can_access_admin_dashboard')
 
     def handle_no_permission(self):
-        if self.request.user.is_authenticated and self.request.user.username != None:
+        if self.request.user.is_authenticated and not self.request.user.is_staff:
             return redirect('supplies:customer_dashboard')
         else:
             return redirect('supplies:customer_access')
