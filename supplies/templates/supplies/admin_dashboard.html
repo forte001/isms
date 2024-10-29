@@ -28,6 +28,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Transaction Reference</th>
                     <th>Product</th>
                     <th>Customer</th>
                     <th>Quantity</th>
@@ -39,6 +40,7 @@
                 {% for sale in sales %}
                 <tr>
                     <td>{{ sale.id}}</td>
+                    <td>{{ sale.transaction_reference}}</td>
                     <td>{{sale.product.product_name}}</td>
                     <td>{{ sale.customer}}</td>
                     <td>{{ sale.quantity }}</td>

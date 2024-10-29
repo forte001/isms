@@ -4,13 +4,13 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
-from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product
+from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, TransactionLog
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.views import View
-import csv, io
+import csv, io, uuid
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout, login
@@ -232,7 +232,19 @@ def create_sale(request, ):
         
         total_price = product.price * quantity
         
-        Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
+        sale = Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
+
+        # Generate a unique transaction reference
+        transaction_reference = uuid.uuid4()
+
+        # Log the transaction with buyer details and transaction reference
+        TransactionLog.objects.create(
+            sale=sale,
+            action='Sale Created',
+            details=f'Sold {quantity} of {product.product_name} for N{total_price}',
+            customer=request.user.customer_first_name,  # Assuming the user has this attribute
+            transaction_reference=transaction_reference
+        )
         
         # Update stock quantity
         product.stock_quantity -= quantity
