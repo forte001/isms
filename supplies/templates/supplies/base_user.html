@@ -23,7 +23,7 @@
                         <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
                     {% endif %}
                     <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
-                    <li><a href="#">Transactions</a></li>
+                    <li><a href="#">Sales</a></li>
                     <li><a href="{% url 'supplies:customer_logout' %}">Logout</a></li>
                 </ul>
             </div>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="user-profile">
                         {% if not request.user.is_staff %}
-                            {{ customer.customer_first_name }} 
+                            {{ request.user.customer_first_name }} 
                         {% else %}
                             {{ request.user.username }}
                         {% endif %}

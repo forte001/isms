@@ -344,10 +344,20 @@ class CustomerDashboardView(View):
     template_name = 'supplies/customer_dashboard.html'
 
     def get(self, request):
-        customer = None
-        if request.session.get('customer_id'):
-            customer = get_object_or_404(Customer, id=request.session['customer_id'] )
-        return render(request, self.template_name, {'customer': customer})
+            customer = request.user
+
+        # Get total purchases and recent purchases
+            total_purchases = Sale.objects.filter(customer=customer).count()
+            total_products = Sale.objects.filter(customer=customer).values('product').distinct().count()
+            recent_purchases = Sale.objects.filter(customer=customer).order_by('-date')[:5]
+            total_spent = Sale.objects.filter(customer=customer).aggregate(total=Sum('total_price'))['total'] or 0
+
+            return render(request, self.template_name, {
+            'total_purchases': total_purchases,
+            'recent_purchases': recent_purchases,
+            'total_spent': total_spent,
+            'total_products': total_products
+        })
 
 # Customer multi action view manages creation of customer account and login 
 class CustomerMultiActionView(View):
