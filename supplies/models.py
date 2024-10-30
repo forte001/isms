@@ -93,6 +93,7 @@ class Customer(AbstractUser):
 
 ### Sale Model
 class Sale(models.Model):
+    sales_reference = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     product = models.ForeignKey('supplies.Product', on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

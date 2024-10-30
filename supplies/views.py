@@ -234,18 +234,16 @@ def create_sale(request, ):
         
         sale = Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
 
-        # Generate a unique transaction reference
-        transaction_reference = uuid.uuid4()
 
         # Log the transaction with buyer details and transaction reference
-        TransactionLog.objects.create(
+        transaction = TransactionLog.objects.create(
             sale=sale,
             action='Sale Created',
             details=f'Sold {quantity} of {product.product_name} for N{total_price}',
-            customer=request.user.customer_first_name,  # Assuming the user has this attribute
-            transaction_reference=transaction_reference
+            customer=request.user,
         )
         
+
         # Update stock quantity
         product.stock_quantity -= quantity
         product.save()

@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}
-    {% if request.user.is_customer %}
-        Shopping Manager
-    {% else %}
-        Inventory Manager
-    {% endif %}
-    {% endblock %}
+    <!-- {% block title %}{% if not request.user.is_staff %}Shopping Manager{% else %}Inventory Manager{% endif %}{% endblock %} -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'supplies/styles.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
