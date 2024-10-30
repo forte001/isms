@@ -16,14 +16,16 @@
                 <ul>
                     {% if not request.user.is_staff%}
                         <li><a href="{% url 'supplies:customer_dashboard' %}">Customer Dashboard</a></li>
+                        <li><a href="{% url 'supplies:customer_purchase_details' %}">Purchases</a></li>
                         
                     {% else %}
                         <li><a href="{% url 'supplies:admin_dashboard' %}">Dashboard</a></li>
                         <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
                         <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
+                        <li><a href="#">Sales</a></li>
                     {% endif %}
                     <li><a href="{% url 'supplies:product_list' %}">Products</a></li>
-                    <li><a href="#">Sales</a></li>
+                    
                     <li><a href="{% url 'supplies:customer_logout' %}">Logout</a></li>
                 </ul>
             </div>

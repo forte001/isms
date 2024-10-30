@@ -357,7 +357,24 @@ class CustomerDashboardView(View):
             'recent_purchases': recent_purchases,
             'total_spent': total_spent,
             'total_products': total_products
+ 
         })
+
+
+class CustomerPurchaseDetailsView(View):
+    template_name = 'supplies/customer_purchase_details.html'
+
+    @method_decorator(login_required)
+    def get(self, request):
+        customer = request.user
+        total_purchases = Sale.objects.filter(customer=customer).count()
+        purchases = Sale.objects.filter(customer=customer).all()
+
+        return render(request, self.template_name, {
+            'purchases': purchases
+        })
+
+        
 
 # Customer multi action view manages creation of customer account and login 
 class CustomerMultiActionView(View):

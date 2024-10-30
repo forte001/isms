@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView, AdjustStockView
+from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView, AdjustStockView, CustomerPurchaseDetailsView
 # from django.contrib.auth import views as auth_views
 
 app_name = 'supplies'
@@ -18,6 +18,7 @@ urlpatterns = [
     path('customers/access', CustomerMultiActionView.as_view(), name='customer_access'),
     path('customer/delete/<int:customer_id>/', DeleteCustomerView.as_view(), name='delete_customer'),
     path('customer/dashboard', CustomerDashboardView.as_view(), name='customer_dashboard'),
+    path('customer/purchase_detail', CustomerPurchaseDetailsView.as_view(), name='customer_purchase_details'),
     path('suppliers/', SupplierListView.as_view(), name='supplier_list'),
     path('suppliers/create/', CreateSupplierView.as_view(), name='create_supplier'),
     path('supplier/update/<int:supplier_id>', UpdateSupplierView.as_view(), name='update_supplier'),
@@ -25,7 +26,7 @@ urlpatterns = [
     path('stock/adjust/', AdjustStockView.as_view(), name='adjust_stock'),
     path('stock/alerts/', low_stock_alerts, name='low_stock_alerts'),
     path('customer/logout/', customer_logout_view, name='customer_logout'),
-     path('permission-denied/', PermissionDeniedView.as_view(), name='permission_denied'),
+    path('permission-denied/', PermissionDeniedView.as_view(), name='permission_denied'),
 
 
 ]
