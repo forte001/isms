@@ -1,0 +1,11 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+<h2>Pay for Items</h2>
+{% block content %}
+<form method="POST" action="{% url 'create_payment' %}">
+    {% csrf_token %}
+    <input type="hidden" name="sales_reference" value="{{ sale.sales_reference }}">
+    <button type="submit">Pay Now</button>
+</form>
+
+{% endblock %}

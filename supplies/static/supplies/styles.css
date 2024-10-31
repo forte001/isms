@@ -219,6 +219,7 @@ h2 {
 }
 .card-text {
     font-size: 1.2em;
+    text-align: center;   
 }
 
 th, td {

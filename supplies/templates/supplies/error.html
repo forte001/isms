@@ -1,0 +1,9 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+<h2>Error</h2>
+{% block content %}
+
+<p>Your purchase was failed!</p>
+<a href="{% url 'supplies:product_list'%}">Back to Product List</a>
+
+{% endblock %}

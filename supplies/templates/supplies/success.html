@@ -1,0 +1,9 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+<h2>Success</h2>
+{% block content %}
+
+<p>Your purchase was successful!</p>
+<a href="{% url 'supplies:product_list'%}">Back to Product List</a>
+
+{% endblock %}

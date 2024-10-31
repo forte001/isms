@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
-from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, TransactionLog
+from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, TransactionLog, Payment
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -19,6 +19,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.conf import settings
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -254,6 +255,71 @@ def create_sale(request, ):
     
 
     return render(request, 'supplies/create_sale.html', {'products': products})
+
+class CreatePaymentView(View):
+    def post(self, request):
+        sales_reference = request.POST.get('sales_reference')  # Get the sales reference from the form
+        sale = Sale.objects.get(sales_reference=sales_reference)
+        amount = int(sale.total_price * 100)  # Paystack expects the amount in kobo (Naira)
+
+        # Initialize Paystack payment
+        response = request.post(
+            'https://api.paystack.co/transaction/initialize',
+            headers={'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'},
+            json={
+                'email': request.user.customer_email,  # User email
+                'amount': amount,
+                'metadata': {'sales_reference': str(sale.sales_reference)},  # Store sales reference in metadata
+                'callback_url': 'http://localhost:8000/payment/callback/',  # Adjust as necessary
+            }
+        )
+
+        response_data = response.json()
+        if response_data['status']:
+            payment_url = response_data['data']['authorization_url']
+            return redirect(payment_url)
+
+        return render(request, 'supplies/error.html', {'message': 'Payment initialization failed.'})
+
+    
+
+class PaymentCallbackView(View):
+    def get(self, request):
+        transaction_reference = request.GET.get('reference')
+
+        # Verify the transaction
+        response = request.get(
+            f'https://api.paystack.co/transaction/verify/{transaction_reference}',
+            headers={'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'}
+        )
+
+        response_data = response.json()
+        if response_data['status'] and response_data['data']['status'] == 'success':
+            # Find the corresponding sale using metadata
+            sales_reference = response_data['data']['metadata']['sales_reference']
+            sale = Sale.objects.get(sales_reference=sales_reference)
+
+            # Update payment record
+            Payment.objects.create(
+                sale=sale,
+                amount=sale.total_price,
+                transaction_id=transaction_reference,
+                status='completed'
+            )
+
+            # Update stock quantity
+            product = sale.product
+            product.stock_quantity -= sale.quantity
+            product.save()
+
+            # Optionally, update transaction log
+            transaction = TransactionLog.objects.get(sale=sale)
+            transaction.action = 'Payment Successful'
+            transaction.save()
+
+            return render(request, 'supplies/success.html', {'sale': sale})
+
+        return render(request, 'supplies/error.html', {'message': 'Payment verification failed.'})
 
 
 

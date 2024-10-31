@@ -118,6 +118,17 @@ class TransactionLog(models.Model):
         return f"Transaction Log for Sale ID {self.sale.id} at {self.timestamp}"
     
 
+class Payment(models.Model):
+    sale = models.OneToOneField('Sale', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.CharField(max_length=100)
+    status = models.CharField(max_length=20)  #'pending', 'completed', 'failed'
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment for Sale {self.sale.id} - {self.status}"
+    
+
 class StockAdjustment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity_adjusted = models.IntegerField()

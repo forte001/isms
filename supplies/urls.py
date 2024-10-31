@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView, AdjustStockView, CustomerPurchaseDetailsView
+# from .views import ProductListView, CreateProductView, ProductDetailView, UpdateProductView, DeleteProductView, ImportProductView, CustomerListView, CustomerDashboardView, DashboardView, DeleteCustomerView, SupplierListView, CreateSupplierView, UpdateSupplierView, DeleteSupplierView, CustomerMultiActionView, PermissionDeniedView, CustomerLoginView, AdjustStockView, CustomerPurchaseDetailsView
 # from django.contrib.auth import views as auth_views
 
 app_name = 'supplies'
@@ -14,6 +14,8 @@ urlpatterns = [
     path('product/update/<int:product_id>/', UpdateProductView.as_view(), name='update_product'),
     path('product/delete/<int:product_id>/', DeleteProductView.as_view(), name='delete_product'),
     path('sales/create/', create_sale, name='create_sale'),
+    path('payment/create/', CreatePaymentView.as_view(), name='create_payment'),
+    path('payment/callback/', PaymentCallbackView.as_view(), name='payment_callback'),
     path('customer/', CustomerListView.as_view(), name='customer_list'),
     path('customers/access', CustomerMultiActionView.as_view(), name='customer_access'),
     path('customer/delete/<int:customer_id>/', DeleteCustomerView.as_view(), name='delete_customer'),
