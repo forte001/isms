@@ -22,6 +22,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, 
 from django.conf import settings
 
 
+
 # @method_decorator(login_required, name='dispatch')
 # @method_decorator(permission_required('supplies.can_access_admin_dashboard', raise_exception=True), name='dispatch')
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -225,38 +226,44 @@ class DeleteProductView(View):
          product.delete()
          return redirect('supplies:product_list')
 
-def create_sale(request, ):
+def create_sale(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         quantity = int(request.POST.get('quantity'))
         product = Product.objects.get(id=product_id)
-        
+
         total_price = product.price * quantity
-        
+
         sale = Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
 
-
         # Log the transaction with buyer details and transaction reference
-        transaction = TransactionLog.objects.create(
+        TransactionLog.objects.create(
             sale=sale,
             action='Sale Created',
             details=f'Sold {quantity} of {product.product_name} for N{total_price}',
             customer=request.user,
         )
-        
 
-        # Update stock quantity
-        product.stock_quantity -= quantity
-        product.save()
+        # Redirect to the payment view with the sale ID
+        return redirect('supplies:create_payment', sales_reference=sale.sales_reference)
 
-        return redirect('supplies:product_list')
-    
     products = Product.objects.all()
-    
-
     return render(request, 'supplies/create_sale.html', {'products': products})
 
+
+def payment_view(request, sales_reference):
+    sale = get_object_or_404(Sale, id=sales_reference)
+    
+    return render(request, 'supplies/payment_form.html', {'sale': sale})
+
+
+
+
 class CreatePaymentView(View):
+    def get(self, request, sales_reference):
+        # Render a template to initiate the payment
+        return render(request, 'supplies:payment_form.html', {'sales_reference': sales_reference})
+    
     def post(self, request):
         sales_reference = request.POST.get('sales_reference')  # Get the sales reference from the form
         sale = Sale.objects.get(sales_reference=sales_reference)
@@ -307,12 +314,12 @@ class PaymentCallbackView(View):
                 status='completed'
             )
 
-            # Update stock quantity
+            # Update stock quantity only upon successful payment
             product = sale.product
             product.stock_quantity -= sale.quantity
             product.save()
 
-            # Optionally, update transaction log
+            # update transaction log
             transaction = TransactionLog.objects.get(sale=sale)
             transaction.action = 'Payment Successful'
             transaction.save()
@@ -320,6 +327,7 @@ class PaymentCallbackView(View):
             return render(request, 'supplies/success.html', {'sale': sale})
 
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed.'})
+
 
 
 

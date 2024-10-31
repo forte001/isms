@@ -7,5 +7,5 @@
     <input type="hidden" name="sales_reference" value="{{ sale.sales_reference }}">
     <button type="submit">Pay Now</button>
 </form>
-
+<a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 {% endblock %}
