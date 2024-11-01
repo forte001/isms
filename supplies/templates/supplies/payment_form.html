@@ -2,7 +2,11 @@
 {% load static %}
 <h2>Pay for Items</h2>
 {% block content %}
-<form method="POST" action="{% url 'create_payment' %}">
+<h2>Payment for Sale</h2>
+<p>Product: {{ sale.product.product_name }}</p>
+<p>Quantity: {{ sale.quantity }}</p>
+<p>Total Price: N{{ sale.total_price }}</p>
+<form method="POST" action="{% url 'supplies:create_payment' sales_reference %}">
     {% csrf_token %}
     <input type="hidden" name="sales_reference" value="{{ sale.sales_reference }}">
     <button type="submit">Pay Now</button>

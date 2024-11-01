@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.conf import settings
+import requests
 
 
 
@@ -260,23 +261,18 @@ def payment_view(request, sales_reference):
 
 
 class CreatePaymentView(View):
-    def get(self, request, sales_reference):
-        # Render a template to initiate the payment
-        return render(request, 'supplies:payment_form.html', {'sales_reference': sales_reference})
-    
-    def post(self, request):
-        sales_reference = request.POST.get('sales_reference')  # Get the sales reference from the form
+    def post(self, request, sales_reference):
+        # Get the sale using the sales_reference
         sale = Sale.objects.get(sales_reference=sales_reference)
-        amount = int(sale.total_price * 100)  # Paystack expects the amount in kobo (Naira)
+        amount = int(sale.total_price * 100)  # Paystack expects the amount in kobo
 
         # Initialize Paystack payment
-        response = request.post(
+        response = requests.post(
             'https://api.paystack.co/transaction/initialize',
             headers={'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'},
             json={
-                'email': request.user.customer_email,  # User email
+                'email': request.user.customer_email,
                 'amount': amount,
-                'metadata': {'sales_reference': str(sale.sales_reference)},  # Store sales reference in metadata
                 'callback_url': 'http://localhost:8000/payment/callback/',  # Adjust as necessary
             }
         )
@@ -286,8 +282,11 @@ class CreatePaymentView(View):
             payment_url = response_data['data']['authorization_url']
             return redirect(payment_url)
 
-        return render(request, 'supplies/error.html', {'message': 'Payment initialization failed.'})
+        return render(request, 'error.html', {'message': 'Payment initialization failed.'})
 
+    def get(self, request, sales_reference):
+        # Render a template to initiate the payment
+        return render(request, 'supplies/payment_form.html', {'sales_reference': sales_reference})
     
 
 class PaymentCallbackView(View):
