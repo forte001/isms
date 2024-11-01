@@ -233,6 +233,14 @@ def create_sale(request):
         quantity = int(request.POST.get('quantity'))
         product = Product.objects.get(id=product_id)
 
+       # Check if there is enough stock
+        if product.stock_quantity < quantity:
+            # Notify the user about insufficient stock using messages
+            messages.error(request, 'Insufficient stock available for this product.')
+            return render(request, 'supplies/create_sale.html', {
+                'products': Product.objects.all(),
+            })
+
         total_price = product.price * quantity
 
         sale = Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
@@ -252,8 +260,8 @@ def create_sale(request):
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-def payment_view(request, sales_reference):
-    sale = get_object_or_404(Sale, id=sales_reference)
+def payment_view(request, sale_id):
+    sale = get_object_or_404(Sale, id=sale_id)
     
     return render(request, 'supplies/payment_form.html', {'sale': sale})
 
@@ -273,7 +281,7 @@ class CreatePaymentView(View):
             json={
                 'email': request.user.customer_email,
                 'amount': amount,
-                'callback_url': 'http://localhost:8000/payment/callback/',  # Adjust as necessary
+                'callback_url': 'http://localhost:8000/payment/callback/',
             }
         )
 
@@ -313,10 +321,11 @@ class PaymentCallbackView(View):
                 status='completed'
             )
 
-            # Update stock quantity only upon successful payment
+             # Update stock quantity only upon successful payment
             product = sale.product
-            product.stock_quantity -= sale.quantity
-            product.save()
+            if product.stock_quantity >= sale.quantity:  # Check if enough stock is available
+                product.stock_quantity -= sale.quantity
+                product.save()
 
             # update transaction log
             transaction = TransactionLog.objects.get(sale=sale)
@@ -412,25 +421,33 @@ class DeleteCustomerView(View):
         customer.delete()
         return redirect('supplies:customer_list')
     
-@method_decorator(login_required, name='dispatch')
-class CustomerDashboardView(View):
+
+class CustomerDashboardView(LoginRequiredMixin, View):
     template_name = 'supplies/customer_dashboard.html'
 
     def get(self, request):
-            customer = request.user
+        customer = request.user
 
-        # Get total purchases and recent purchases
-            total_purchases = Sale.objects.filter(customer=customer).count()
-            total_products = Sale.objects.filter(customer=customer).values('product').distinct().count()
-            recent_purchases = Sale.objects.filter(customer=customer).order_by('-date')[:5]
-            total_spent = Sale.objects.filter(customer=customer).aggregate(total=Sum('total_price'))['total'] or 0
+        # Filter sales for completed transactions only
+        completed_sales = Sale.objects.filter(customer=customer, payment__status='completed')
 
-            return render(request, self.template_name, {
+        # Get total purchases (number of completed sales)
+        total_purchases = completed_sales.count()
+
+        # Get total products (distinct product counts from completed sales)
+        total_products = completed_sales.values('product').distinct().count()
+
+        # Get recent purchases
+        recent_purchases = completed_sales.order_by('-date')[:5]
+
+        # Calculate total spent on completed transactions only
+        total_spent = completed_sales.aggregate(total=Sum('total_price'))['total'] or 0
+
+        return render(request, self.template_name, {
             'total_purchases': total_purchases,
             'recent_purchases': recent_purchases,
             'total_spent': total_spent,
             'total_products': total_products
- 
         })
 
 
@@ -440,8 +457,7 @@ class CustomerPurchaseDetailsView(View):
     @method_decorator(login_required)
     def get(self, request):
         customer = request.user
-        total_purchases = Sale.objects.filter(customer=customer).count()
-        purchases = Sale.objects.filter(customer=customer).all()
+        purchases = Sale.objects.filter(customer=customer).select_related('product').prefetch_related('payment')  # Prefetch payment
 
         return render(request, self.template_name, {
             'purchases': purchases

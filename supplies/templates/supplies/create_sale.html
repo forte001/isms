@@ -3,6 +3,14 @@
 {% block title %}Create Sale {% endblock %}
 {% block content %}
 <h2>Create Sale</h2>
+
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+        </li>
+    {% endfor %}
+</ul>
     <form method="post" class="form">
         {% csrf_token %}
         <label for="product" class="label">Product:</label>

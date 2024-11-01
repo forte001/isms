@@ -131,6 +131,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = 'login'  # Redirect to login page after logout
 
+LOGIN_REDIRECT_URL = '/supplies/customer/dashboard'
+
+
 AUTH_USER_MODEL = 'supplies.Customer'
 
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
