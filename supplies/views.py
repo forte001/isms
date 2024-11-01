@@ -41,13 +41,18 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request):
         total_suppliers = Supplier.objects.count()
         total_products = Product.objects.count()
-        total_sales = Sale.objects.aggregate(total=Sum('total_price'))['total'] or 0
+
+        # Filter sales for completed transactions only
+        completed_sales = Sale.objects.filter(payment__status='completed')
+
+        # Get total purchases (number of completed sales)
+        total_sales = completed_sales.aggregate(total=Sum('total_price'))['total'] or 0
 
         return render(request, self.template_name, {
             'total_suppliers': total_suppliers,
             'total_products': total_products,
             'total_sales': total_sales,
-            'recent_transactions': Sale.objects.all().order_by('-date')[:5],
+            'recent_transactions': completed_sales.order_by('-date')[:5],
         })
     
 @method_decorator(login_required, name='dispatch')
@@ -457,7 +462,9 @@ class CustomerPurchaseDetailsView(View):
     @method_decorator(login_required)
     def get(self, request):
         customer = request.user
-        purchases = Sale.objects.filter(customer=customer).select_related('product').prefetch_related('payment')  # Prefetch payment
+        purchases = Sale.objects.filter(customer=customer, payment__status='completed').select_related('product').prefetch_related('payment')  # Prefetch payment
+        
+        print(purchases)
 
         return render(request, self.template_name, {
             'purchases': purchases

@@ -10,7 +10,6 @@
             <th>Quantity</th>
             <th>Total Price</th>
             <th>Date</th>
-            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -21,24 +20,14 @@
             <td>{{ sale.quantity }}</td>
             <td>{{ sale.total_price }}</td>
             <td>{{ sale.date }}</td>
-            <td>
-                {% if sale.payment %}
-                    {{ sale.payment.status }}
-                {% else %}
-                    Not Paid
-                {% endif %}
-            </td> 
         </tr>
         {% empty %}
         <tr>
-            <td colspan="5">You haven't made any purchases yet.</td>
+            <td colspan="6">You haven't made any purchases yet.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
-
-
 
 
 {% endblock %}
