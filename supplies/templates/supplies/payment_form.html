@@ -6,7 +6,7 @@
 <p>Product: {{ sale.product.product_name }}</p>
 <p>Quantity: {{ sale.quantity }}</p>
 <p>Total Price: N{{ sale.total_price }}</p>
-<form method="POST" action="{% url 'supplies:create_payment' sales_reference %}">
+<form method="POST" action="{% url 'supplies:create_payment' sale.sales_reference %}">
     {% csrf_token %}
     <input type="hidden" name="sales_reference" value="{{ sale.sales_reference }}">
     <button type="submit">Pay Now</button>

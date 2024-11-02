@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
-from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, TransactionLog, Payment
+from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, Payment
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -238,9 +238,8 @@ def create_sale(request):
         quantity = int(request.POST.get('quantity'))
         product = Product.objects.get(id=product_id)
 
-       # Check if there is enough stock
+        # Check if there is enough stock
         if product.stock_quantity < quantity:
-            # Notify the user about insufficient stock using messages
             messages.error(request, 'Insufficient stock available for this product.')
             return render(request, 'supplies/create_sale.html', {
                 'products': Product.objects.all(),
@@ -248,25 +247,23 @@ def create_sale(request):
 
         total_price = product.price * quantity
 
-        sale = Sale.objects.create(product=product, quantity=quantity, total_price=total_price, customer=request.user)
-
-        # Log the transaction with buyer details and transaction reference
-        TransactionLog.objects.create(
-            sale=sale,
-            action='Sale Created',
-            details=f'Sold {quantity} of {product.product_name} for N{total_price}',
-            customer=request.user,
+        # Create the sale
+        sale = Sale.objects.create(
+            product=product,
+            quantity=quantity,
+            total_price=total_price,
+            customer=request.user
         )
 
-        # Redirect to the payment view with the sale ID
+        # Redirect to the payment view with the sales reference
         return redirect('supplies:create_payment', sales_reference=sale.sales_reference)
 
     products = Product.objects.all()
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-def payment_view(request, sale_id):
-    sale = get_object_or_404(Sale, id=sale_id)
+def payment_view(request, sales_reference):
+    sale = get_object_or_404(Sale, id=sales_reference)
     
     return render(request, 'supplies/payment_form.html', {'sale': sale})
 
@@ -274,10 +271,16 @@ def payment_view(request, sale_id):
 
 
 class CreatePaymentView(View):
+
+    def get(self, request, sales_reference):
+        sale = get_object_or_404(Sale, sales_reference=sales_reference)
+        return render(request, 'supplies/payment_form.html', {'sale': sale})
+
     def post(self, request, sales_reference):
-        # Get the sale using the sales_reference
-        sale = Sale.objects.get(sales_reference=sales_reference)
-        amount = int(sale.total_price * 100)  # Paystack expects the amount in kobo
+        # Convert sales_reference to string
+        sales_reference_str = str(sales_reference)
+        sale = Sale.objects.get(sales_reference=sales_reference_str)
+        amount = int(sale.total_price * 100)  # Paystack expects amount in kobo
 
         # Initialize Paystack payment
         response = requests.post(
@@ -286,6 +289,9 @@ class CreatePaymentView(View):
             json={
                 'email': request.user.customer_email,
                 'amount': amount,
+                'metadata': {
+                    'sales_reference': sales_reference_str  # To include sales_reference in metadata
+                },
                 'callback_url': 'http://localhost:8000/payment/callback/',
             }
         )
@@ -297,28 +303,23 @@ class CreatePaymentView(View):
 
         return render(request, 'error.html', {'message': 'Payment initialization failed.'})
 
-    def get(self, request, sales_reference):
-        # Render a template to initiate the payment
-        return render(request, 'supplies/payment_form.html', {'sales_reference': sales_reference})
-    
 
 class PaymentCallbackView(View):
     def get(self, request):
         transaction_reference = request.GET.get('reference')
 
         # Verify the transaction
-        response = request.get(
+        response = requests.get(
             f'https://api.paystack.co/transaction/verify/{transaction_reference}',
             headers={'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'}
         )
 
         response_data = response.json()
         if response_data['status'] and response_data['data']['status'] == 'success':
-            # Find the corresponding sale using metadata
             sales_reference = response_data['data']['metadata']['sales_reference']
             sale = Sale.objects.get(sales_reference=sales_reference)
 
-            # Update payment record
+            # Create payment record
             Payment.objects.create(
                 sale=sale,
                 amount=sale.total_price,
@@ -326,22 +327,15 @@ class PaymentCallbackView(View):
                 status='completed'
             )
 
-             # Update stock quantity only upon successful payment
+            # Update stock quantity upon successful payment
             product = sale.product
-            if product.stock_quantity >= sale.quantity:  # Check if enough stock is available
+            if product.stock_quantity >= sale.quantity:
                 product.stock_quantity -= sale.quantity
                 product.save()
 
-            # update transaction log
-            transaction = TransactionLog.objects.get(sale=sale)
-            transaction.action = 'Payment Successful'
-            transaction.save()
-
-            return render(request, 'supplies/success.html', {'sale': sale})
+            return render(request, 'supplies/success.html', {'sale': sale, 'product': product })
 
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed.'})
-
-
 
 
 class CustomerListView(PermissionRequiredMixin, View):
@@ -462,9 +456,17 @@ class CustomerPurchaseDetailsView(View):
     @method_decorator(login_required)
     def get(self, request):
         customer = request.user
-        purchases = Sale.objects.filter(customer=customer, payment__status='completed').select_related('product').prefetch_related('payment')  # Prefetch payment
         
-        print(purchases)
+        # Debug: Check current user
+        print(f"Current User: {customer}")
+
+        # Get all sales for the customer
+        all_sales = Sale.objects.filter(customer=customer).select_related('product')
+        print(f"Total Sales: {all_sales.count()}")  # Total sales count for debugging
+
+        # Filter for purchases where payment status is 'completed'
+        purchases = all_sales.filter(payment__status='completed')
+        print(f"Completed Purchases: {purchases.count()}")  # Check how many completed purchases are found
 
         return render(request, self.template_name, {
             'purchases': purchases

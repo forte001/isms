@@ -104,18 +104,6 @@ class Sale(models.Model):
         return f"Sale of {self.quantity} x {self.product.product_name} to {self.customer}"
     
 
-
-class TransactionLog(models.Model):
-    sale = models.ForeignKey('Sale', on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=100)
-    details = models.TextField()
-    customer = models.CharField(max_length=100)
-    transaction_reference = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    
-
-    def __str__(self):
-        return f"Transaction Log for Sale ID {self.sale.id} at {self.timestamp}"
     
 
 class Payment(models.Model):
