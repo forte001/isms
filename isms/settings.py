@@ -139,3 +139,6 @@ AUTH_USER_MODEL = 'supplies.Customer'
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '2957-102-91-71-139.ngrok-free.app']
+
+

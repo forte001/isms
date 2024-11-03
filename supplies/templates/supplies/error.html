@@ -2,8 +2,9 @@
 {% load static %}
 <h2>Error</h2>
 {% block content %}
-
-<p>Your purchase was failed!</p>
+<h2>Payment Verification Failed</h2>
+<p>{{ message }}</p>
+<a href="{% url 'supplies:customer_dashboard' %}">Go back to Dashboard</a>
 <a href="{% url 'supplies:product_list'%}">Back to Product List</a>
 
 {% endblock %}

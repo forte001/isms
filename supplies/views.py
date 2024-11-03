@@ -292,7 +292,8 @@ class CreatePaymentView(View):
                 'metadata': {
                     'sales_reference': sales_reference_str  # To include sales_reference in metadata
                 },
-                'callback_url': 'http://localhost:8000/payment/callback/',
+                'callback_url': 'https://2957-102-91-71-139.ngrok-free.app/payment/callback/',
+
             }
         )
 
@@ -301,7 +302,7 @@ class CreatePaymentView(View):
             payment_url = response_data['data']['authorization_url']
             return redirect(payment_url)
 
-        return render(request, 'error.html', {'message': 'Payment initialization failed.'})
+        return render(request, 'supplies/error.html', {'message': 'Payment initialization failed.'})
 
 
 class PaymentCallbackView(View):
@@ -333,7 +334,7 @@ class PaymentCallbackView(View):
                 product.stock_quantity -= sale.quantity
                 product.save()
 
-            return render(request, 'supplies/success.html', {'sale': sale, 'product': product })
+            return render(request, 'supplies/success.html', {'sale': sale, 'product': product, 'message': 'Payment was successful!.' })
 
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed.'})
 
@@ -457,17 +458,12 @@ class CustomerPurchaseDetailsView(View):
     def get(self, request):
         customer = request.user
         
-        # Debug: Check current user
-        print(f"Current User: {customer}")
-
         # Get all sales for the customer
         all_sales = Sale.objects.filter(customer=customer).select_related('product')
-        print(f"Total Sales: {all_sales.count()}")  # Total sales count for debugging
-
+       
         # Filter for purchases where payment status is 'completed'
         purchases = all_sales.filter(payment__status='completed')
-        print(f"Completed Purchases: {purchases.count()}")  # Check how many completed purchases are found
-
+       
         return render(request, self.template_name, {
             'purchases': purchases
         })
