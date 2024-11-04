@@ -29,7 +29,6 @@ SECRET_KEY = 'django-insecure-$8f$@1f-snf7632ibwt!(xtu!696*r^=+4+kjdm@%$v6u*&#3g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -42,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'paystack',
+    
     
 ]
 

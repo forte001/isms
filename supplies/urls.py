@@ -14,7 +14,6 @@ urlpatterns = [
     path('product/update/<int:product_id>/', UpdateProductView.as_view(), name='update_product'),
     path('product/delete/<int:product_id>/', DeleteProductView.as_view(), name='delete_product'),
     path('sales/create/', create_sale, name='create_sale'),
-    path('payment/<int:sale_id>/', payment_view, name='payment'),
     path('payment/create/<uuid:sales_reference>/', CreatePaymentView.as_view(), name='create_payment'),
     path('payment/callback/', PaymentCallbackView.as_view(), name='payment_callback'),
     path('customer/', CustomerListView.as_view(), name='customer_list'),

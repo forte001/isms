@@ -9,7 +9,7 @@
 <form method="POST" action="{% url 'supplies:create_payment' sale.sales_reference %}">
     {% csrf_token %}
     <input type="hidden" name="sales_reference" value="{{ sale.sales_reference }}">
-    <button type="submit">Pay Now</button>
+    <button class="btn" type="submit">Pay Now</button>
 </form>
 <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
 {% endblock %}

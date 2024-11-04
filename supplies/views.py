@@ -2,7 +2,7 @@
 
 from typing import Any
 from django.db.models.query import QuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, Payment
 from django.views import generic
@@ -262,24 +262,22 @@ def create_sale(request):
     return render(request, 'supplies/create_sale.html', {'products': products})
 
 
-def payment_view(request, sales_reference):
-    sale = get_object_or_404(Sale, id=sales_reference)
-    
-    return render(request, 'supplies/payment_form.html', {'sale': sale})
-
-
-
-
 class CreatePaymentView(View):
 
     def get(self, request, sales_reference):
         sale = get_object_or_404(Sale, sales_reference=sales_reference)
+        print("Sales reference for this sale is: "+ str(sales_reference))
         return render(request, 'supplies/payment_form.html', {'sale': sale})
 
     def post(self, request, sales_reference):
+        print("POST request received")
         # Convert sales_reference to string
         sales_reference_str = str(sales_reference)
-        sale = Sale.objects.get(sales_reference=sales_reference_str)
+        # Fetch the sale object using the sales_reference
+        try:
+            sale = Sale.objects.get(sales_reference=sales_reference_str)
+        except Sale.DoesNotExist:
+            return JsonResponse({'error': 'Sale not found'}, status=404)
         amount = int(sale.total_price * 100)  # Paystack expects amount in kobo
 
         # Initialize Paystack payment
@@ -307,7 +305,10 @@ class CreatePaymentView(View):
 
 class PaymentCallbackView(View):
     def get(self, request):
+        print("Callback view hit!")
         transaction_reference = request.GET.get('reference')
+        print("Callback URL accessed with parameters:", request.GET)
+
 
         # Verify the transaction
         response = requests.get(
@@ -319,6 +320,7 @@ class PaymentCallbackView(View):
         if response_data['status'] and response_data['data']['status'] == 'success':
             sales_reference = response_data['data']['metadata']['sales_reference']
             sale = Sale.objects.get(sales_reference=sales_reference)
+
 
             # Create payment record
             Payment.objects.create(
