@@ -290,7 +290,7 @@ class CreatePaymentView(View):
                 'metadata': {
                     'sales_reference': sales_reference_str  # To include sales_reference in metadata
                 },
-                'callback_url': 'https://2957-102-91-71-139.ngrok-free.app/payment/callback/',
+                'callback_url': 'https://0f0f-102-91-92-197.ngrok-free.app/supplies/payment/callback/',
 
             }
         )
@@ -309,18 +309,25 @@ class PaymentCallbackView(View):
         transaction_reference = request.GET.get('reference')
         print("Callback URL accessed with parameters:", request.GET)
 
-
-        # Verify the transaction
+        # Verify the transaction with Paystack
         response = requests.get(
             f'https://api.paystack.co/transaction/verify/{transaction_reference}',
             headers={'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'}
         )
 
         response_data = response.json()
+
+        # Debugging the response data
+        print("Response Data: ", response_data)
+
+        # Check if the payment was successful
         if response_data['status'] and response_data['data']['status'] == 'success':
             sales_reference = response_data['data']['metadata']['sales_reference']
-            sale = Sale.objects.get(sales_reference=sales_reference)
-
+            try:
+                sale = Sale.objects.get(sales_reference=sales_reference)
+            except Sale.DoesNotExist:
+                # If Sale doesn't exist, redirect to failure page
+                return redirect('supplies:payment_failed')
 
             # Create payment record
             Payment.objects.create(
@@ -336,9 +343,33 @@ class PaymentCallbackView(View):
                 product.stock_quantity -= sale.quantity
                 product.save()
 
-            return render(request, 'supplies/success.html', {'sale': sale, 'product': product, 'message': 'Payment was successful!.' })
+            # Redirect to the success page (passing sales_reference for later retrieval)
+            return redirect('supplies:payment_success', sales_reference=sale.sales_reference)
 
-        return render(request, 'supplies/error.html', {'message': 'Payment verification failed.'})
+        # If payment verification fails, redirect to the failure page
+        return redirect('supplies:payment_failed')
+    
+
+
+class PaymentSuccessView(View):
+    def get(self, request, sales_reference):
+        try:
+            sale = Sale.objects.get(sales_reference=sales_reference)
+        except Sale.DoesNotExist:
+            return render(request, 'supplies/error.html', {'message': 'Sale not found.'})
+
+        # Render success page with sale and product information
+        return render(request, 'supplies/success.html', {
+            'sale': sale,
+            'product': sale.product,
+            'message': 'Payment was successful!'
+        })
+
+class PaymentFailedView(View):
+    def get(self, request):
+        return render(request, 'supplies/error.html', {'message': 'Payment verification failed or transaction was unsuccessful.'})
+
+
 
 
 class CustomerListView(PermissionRequiredMixin, View):
