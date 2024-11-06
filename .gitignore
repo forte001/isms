@@ -2,6 +2,6 @@ db.sqlite3
 .DS_Store
 isms_features.txt
 .env
-payment_backup.json
-sales_backup.json
-transactionlog_backup.json
+payment_backup
+sales_backup
+transactionlog_backup
