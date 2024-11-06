@@ -377,11 +377,11 @@ class AllSalesView(View):
         all_sales = Sale.objects.filter(payment__status='completed')
 
         # Paginate sales (10 sales per page)
-        paginator = Paginator(all_sales, 15)  # Show 10 sales per page
+        paginator = Paginator(all_sales, 15)  # Show 20 sales per page
         page_number = request.GET.get('page')  # Get the page number from the request
         page_obj = paginator.get_page(page_number)
 
-        return render(request, self.template_name, {'all_sales':all_sales, 'page_obj': page_obj})
+        return render(request, self.template_name, {'page_obj': page_obj})
 
 class CustomerListView(PermissionRequiredMixin, View):
     template_name = 'supplies/customer_list.html'
