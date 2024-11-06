@@ -370,7 +370,12 @@ class PaymentFailedView(View):
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed or transaction was unsuccessful.'})
 
 
+class AllSalesView(View):
+    template_name = 'supplies/all_sales.html'
 
+    def get(self, request):
+        all_sales = Sale.objects.all()
+        return render(request, self.template_name, {'all_sales':all_sales})
 
 class CustomerListView(PermissionRequiredMixin, View):
     template_name = 'supplies/customer_list.html'
