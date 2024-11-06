@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.conf import settings
 import requests
-
+from django.core.paginator import Paginator
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -374,8 +374,14 @@ class AllSalesView(View):
     template_name = 'supplies/all_sales.html'
 
     def get(self, request):
-        all_sales = Sale.objects.all()
-        return render(request, self.template_name, {'all_sales':all_sales})
+        all_sales = Sale.objects.filter(payment__status='completed')
+
+        # Paginate sales (10 sales per page)
+        paginator = Paginator(all_sales, 15)  # Show 10 sales per page
+        page_number = request.GET.get('page')  # Get the page number from the request
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, self.template_name, {'all_sales':all_sales, 'page_obj': page_obj})
 
 class CustomerListView(PermissionRequiredMixin, View):
     template_name = 'supplies/customer_list.html'
