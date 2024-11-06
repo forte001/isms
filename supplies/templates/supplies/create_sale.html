@@ -1,0 +1,29 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+{% block title %}Create Sale {% endblock %}
+{% block content %}
+<h2>Create Sale</h2>
+
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+        </li>
+    {% endfor %}
+</ul>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <label for="product" class="label">Product:</label>
+        <select name="product_id" class="input-text" required>
+            {% for product in products %}
+            <option value="{{ product.id }}">{{ product.product_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="quantity" class="label">Quantity:</label>
+        <input class="input-text" type="number" name="quantity" required min="1">
+        <br>
+        <button class="btn" type="submit">Buy Item</button>
+    </form>
+    <a href="{% url 'supplies:product_list' %}">Back to Product List</a>
+{% endblock %}
