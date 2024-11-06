@@ -1,7 +1,0 @@
-db.sqlite3
-.DS_Store
-isms_features.txt
-.env
-payment_backup
-sales_backup
-transactionlog_backup
