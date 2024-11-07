@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
-from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, Payment
+from .models import  Category, Customer, Sale, StockAdjustment, Supplier, Product, Payment, Receipt
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -22,6 +22,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, 
 from django.conf import settings
 import requests
 from django.core.paginator import Paginator
+from weasyprint import HTML
+from django.template.loader import render_to_string
+import datetime
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -328,6 +331,9 @@ class PaymentCallbackView(View):
             except Sale.DoesNotExist:
                 # If Sale doesn't exist, redirect to failure page
                 return redirect('supplies:payment_failed')
+            
+
+            
 
             # Create payment record
             Payment.objects.create(
@@ -343,6 +349,15 @@ class PaymentCallbackView(View):
                 product.stock_quantity -= sale.quantity
                 product.save()
 
+
+             # Create the receipt
+            receipt = Receipt.objects.create(
+                sale=sale,
+                transaction_id=transaction_reference,
+                amount_paid=sale.total_price,
+                date_issued=datetime.now()
+            )
+
             # Redirect to the success page (passing sales_reference for later retrieval)
             return redirect('supplies:payment_success', sales_reference=sale.sales_reference)
 
@@ -355,19 +370,52 @@ class PaymentSuccessView(View):
     def get(self, request, sales_reference):
         try:
             sale = Sale.objects.get(sales_reference=sales_reference)
+            receipt = Receipt.objects.get(sale=sale)  # Fetch the receipt related to this sale
         except Sale.DoesNotExist:
             return render(request, 'supplies/error.html', {'message': 'Sale not found.'})
+        except Receipt.DoesNotExist:
+            receipt = None
 
-        # Render success page with sale and product information
+        # Render success page with sale, product, and receipt information
         return render(request, 'supplies/success.html', {
             'sale': sale,
             'product': sale.product,
+            'receipt': receipt,
             'message': 'Payment was successful!'
         })
 
 class PaymentFailedView(View):
     def get(self, request):
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed or transaction was unsuccessful.'})
+    
+
+
+
+def generate_pdf_receipt(receipt):
+    # Define the template for your receipt
+    receipt_html = render_to_string('supplies/receipt_template.html', {'receipt': receipt})
+
+    # Generate PDF from HTML string
+    pdf = HTML(string=receipt_html).write_pdf()
+
+    return pdf
+
+class ReceiptDownloadView(View):
+    def get(self, request, sales_reference):
+        try:
+            sale = Sale.objects.get(sales_reference=sales_reference)
+            receipt = Receipt.objects.get(sale=sale)
+        except (Sale.DoesNotExist, Receipt.DoesNotExist):
+            return render(request, 'supplies/error.html', {'message': 'Receipt not found.'})
+
+        # Generate the PDF using the helper function
+        pdf = generate_pdf_receipt(receipt)
+
+        # Return the PDF as an HTTP response
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="receipt_{sale.sales_reference}.pdf"'
+
+        return response
 
 
 class AllSalesView(View):

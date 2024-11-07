@@ -1,0 +1,46 @@
+<!-- supplies/receipt_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt - {{ receipt.sale.sales_reference }}</title>
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .receipt-details {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-header">
+        <h1>Receipt</h1>
+        <p>Sales Reference: {{ receipt.sale.sales_reference }}</p>
+        <p>Date: {{ receipt.date_issued }}</p>
+    </div>
+
+    <div class="receipt-details">
+        <h3>Customer Details:</h3>
+        <p>Name: {{ sale.customer}}</p>
+        <p>Email: {{ sale.customer.customer_email }}</p>
+
+        <h3>Sale Details:</h3>
+        <p>Product: {{ receipt.sale.product.product_name }}</p>
+        <p>Quantity Sold: {{ receipt.sale.quantity }}</p>
+        <p>Total Price: N{{ receipt.sale.total_price }}</p>
+    </div>
+
+    <div class="receipt-footer">
+        <p>Transaction ID: {{ receipt.transaction_id }}</p>
+        <p>Amount Paid: N{{ receipt.amount_paid }}</p>
+    </div>
+</body>
+</html>

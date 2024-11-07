@@ -1,12 +1,25 @@
 {% extends "supplies/base_user.html" %}
 {% load static %}
 {% block content %}
+<h1>Payment Successful</h1>
 <p>{{ message }}</p>
-<p>Your purchase was successful!</p>
-<p>Thank you for your purchase!</p>
+
 <p>Product: {{ product.product_name }}</p>
-<p>Quantity: {{ sale.quantity }}</p>
+<p>Quantity Sold: {{ sale.quantity }}</p>
 <p>Total Price: N{{ sale.total_price }}</p>
-<a href="{% url 'supplies:product_list'%}">Back to Product List</a>
+<p>Sales Reference: {{ sale.sales_reference }}</p>
+
+{% if receipt %}
+    <h3>Receipt</h3>
+    <p>Transaction ID: {{ receipt.transaction_id }}</p>
+    <p>Amount Paid: N{{ receipt.amount_paid }}</p>
+    <p>Date Issued: {{ receipt.date_issued }}</p>
+    <p>Receipt for Sale: {{ receipt.sale.sales_reference }}</p>
+{% else %}
+    <p>No receipt generated.</p>
+{% endif %}
+
+<a href="{% url 'supplies:product_list' %}">Back to Product List</a>
+
 
 {% endblock %}

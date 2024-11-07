@@ -117,6 +117,17 @@ class Payment(models.Model):
         return f"Payment for Sale {self.sale.id} - {self.status}"
     
 
+class Receipt(models.Model):
+    sale = models.OneToOneField('Sale', on_delete=models.CASCADE)
+    transaction_id = models.CharField(max_length=255)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    date_issued = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Receipt for Sale {self.sale.sales_reference} - {self.customer.username}'
+
+    
+
 class StockAdjustment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity_adjusted = models.IntegerField()

@@ -18,6 +18,7 @@ urlpatterns = [
     path('payment/success/<uuid:sales_reference>/', PaymentSuccessView.as_view(), name='payment_success'),
     path('payment/failed/', PaymentFailedView.as_view(), name='payment_failed'),
     path('payment/callback/', PaymentCallbackView.as_view(), name='payment_callback'),
+    path('payment/receipt/download/<str:sales_reference>/', ReceiptDownloadView.as_view(), name='receipt_download'),
     path('all_sales/', AllSalesView.as_view(), name='all_sales'),
     path('customer/', CustomerListView.as_view(), name='customer_list'),
     path('customers/access', CustomerMultiActionView.as_view(), name='customer_access'),
