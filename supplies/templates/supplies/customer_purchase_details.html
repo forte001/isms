@@ -10,6 +10,7 @@
             <th>Quantity</th>
             <th>Total Price</th>
             <th>Date</th>
+            <th>Payment receipts</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,7 @@
             <td>{{ sale.quantity }}</td>
             <td>{{ sale.total_price }}</td>
             <td>{{ sale.date }}</td>
+            <td><a href="{% url 'supplies:receipt_download' sale.sales_reference %}">Download receipt</a></td>
         </tr>
         {% empty %}
         <tr>

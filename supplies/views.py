@@ -24,7 +24,7 @@ import requests
 from django.core.paginator import Paginator
 from weasyprint import HTML
 from django.template.loader import render_to_string
-import datetime
+from datetime import datetime
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -332,6 +332,14 @@ class PaymentCallbackView(View):
                 # If Sale doesn't exist, redirect to failure page
                 return redirect('supplies:payment_failed')
             
+            # Create the receipt if it doesn't exist
+            if not Receipt.objects.filter(sale=sale).exists():
+                receipt = Receipt.objects.create(
+                    sale=sale,
+                    transaction_id=transaction_reference,
+                    amount_paid=sale.total_price,
+                    date_issued=datetime.now()  # Use current time for date_issued
+                )
 
             
 
@@ -349,14 +357,6 @@ class PaymentCallbackView(View):
                 product.stock_quantity -= sale.quantity
                 product.save()
 
-
-             # Create the receipt
-            receipt = Receipt.objects.create(
-                sale=sale,
-                transaction_id=transaction_reference,
-                amount_paid=sale.total_price,
-                date_issued=datetime.now()
-            )
 
             # Redirect to the success page (passing sales_reference for later retrieval)
             return redirect('supplies:payment_success', sales_reference=sale.sales_reference)
@@ -406,7 +406,7 @@ class ReceiptDownloadView(View):
             sale = Sale.objects.get(sales_reference=sales_reference)
             receipt = Receipt.objects.get(sale=sale)
         except (Sale.DoesNotExist, Receipt.DoesNotExist):
-            return render(request, 'supplies/error.html', {'message': 'Receipt not found.'})
+            return render(request, 'supplies/error.html', {'message': 'Receipt not found or payment not completed yet.'})
 
         # Generate the PDF using the helper function
         pdf = generate_pdf_receipt(receipt)
@@ -416,6 +416,7 @@ class ReceiptDownloadView(View):
         response['Content-Disposition'] = f'attachment; filename="receipt_{sale.sales_reference}.pdf"'
 
         return response
+
 
 
 class AllSalesView(View):
