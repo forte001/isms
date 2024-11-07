@@ -25,6 +25,10 @@ from django.core.paginator import Paginator
 from weasyprint import HTML
 from django.template.loader import render_to_string
 from datetime import datetime
+import qrcode
+from io import BytesIO
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -387,25 +391,51 @@ class PaymentSuccessView(View):
 class PaymentFailedView(View):
     def get(self, request):
         return render(request, 'supplies/error.html', {'message': 'Payment verification failed or transaction was unsuccessful.'})
-    
 
 
+ 
+### Generate QR code
+def generate_qr_code(data):
+    # Generate the QR code from the provided data (like receipt URL or transaction ID)
+    print("Generating QR Code for:", data)
+    qr = qrcode.make(data)
+    img = BytesIO()
+    qr.save(img)
+    img.seek(0)
+    return img   
 
+### Generate payment receipt
 def generate_pdf_receipt(receipt):
+    # Generate the QR code for the receipt URL
+    qr_code = generate_qr_code(f'https://0f0f-102-91-92-197.ngrok-free.app/supplies/receipt/{receipt.sale.sales_reference}')
+    
+    # Save QR code as an image and get its URL or directly embed it
+    qr_filename = f"receipt_{receipt.sale.sales_reference}_qr.png"
+    qr_image_path = default_storage.save(qr_filename, ContentFile(qr_code.getvalue()))
+
+    print(f"QR Code saved at: {qr_image_path}")
+
+    # Get the URL of the QR code image
+    qr_image_url = default_storage.url(qr_image_path)
+
     # Define the template for your receipt
-    receipt_html = render_to_string('supplies/receipt_template.html', {'receipt': receipt})
+    receipt_html = render_to_string('supplies/receipt_template.html', {'receipt': receipt, 'qr_code_url': qr_image_url})
+    print(f"HTML for receipt: {receipt_html}")
 
     # Generate PDF from HTML string
     pdf = HTML(string=receipt_html).write_pdf()
 
     return pdf
 
+### Download payment receipt
 class ReceiptDownloadView(View):
     def get(self, request, sales_reference):
         try:
             sale = Sale.objects.get(sales_reference=sales_reference)
             receipt = Receipt.objects.get(sale=sale)
-        except (Sale.DoesNotExist, Receipt.DoesNotExist):
+            print(f"Found Receipt for sale: {sale.sales_reference}")
+        except (Sale.DoesNotExist, Receipt.DoesNotExist) as e:
+            print(f"Error: {str(e)}")
             return render(request, 'supplies/error.html', {'message': 'Receipt not found or payment not completed yet.'})
 
         # Generate the PDF using the helper function
