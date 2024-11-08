@@ -23,8 +23,6 @@ A comprehensive Inventory and Sales Management System built with Django. This sy
 ### Admin Dashboard
 - **View Sales and Inventory Stats**: Admins can view sales data, inventory status, and low stock alerts from the admin dashboard for better decision-making.
 
-### Stats & Analytics
-- **View Inventory and Sales Statistics**: Comprehensive stats on sales, revenue, and inventory for better tracking and decision-making.
 
 ## Installation
 
@@ -49,14 +47,17 @@ A comprehensive Inventory and Sales Management System built with Django. This sy
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 3. **Run Migration
+
    python manage.py makemigrations
    python manage.py migrate
 
 4. **Create Super User (Optional)
+
     python manage.py createsuperuser
 
 
 5. **Run development server
+
     python manage.py runserver
 
     Open your browser and go to http://127.0.0.1:8000 to start using the system.
