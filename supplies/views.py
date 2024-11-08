@@ -47,7 +47,7 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request):
         total_suppliers = Supplier.objects.count()
-        total_products = Product.objects.count()
+        total_products = Product.objects.values('product_name').distinct().count()
 
         # Filter sales for completed transactions only
         completed_sales = Sale.objects.filter(payment__status='completed')

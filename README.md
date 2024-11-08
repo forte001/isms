@@ -38,28 +38,32 @@ A comprehensive Inventory and Sales Management System built with Django. This sy
 
    ```bash
    git clone https://github.com/forte001/isms.git
+
    cd inventory-sales-management
 
 
-2. **Create Virtual environment
+2. **Create Virtual environment**
 
     python -m venv venv
+
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
-3. **Run Migration
+3. **Run Migration**
 
    python manage.py makemigrations
+   
    python manage.py migrate
 
-4. **Create Super User (Optional)
+4. **Create Super User (Optional)**
 
     python manage.py createsuperuser
 
 
-5. **Run development server
+5. **Run development server**
 
     python manage.py runserver
 
     Open your browser and go to http://127.0.0.1:8000 to start using the system.
+
     Access the admin dashboard at http://127.0.0.1:8000/admin with the superuser account.
 
