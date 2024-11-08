@@ -126,6 +126,8 @@ STATIC_URL = 'static/'
 # Define media root and URL for file storage
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Local development URL
+SITE_URL = 'http://localhost:8000'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -142,6 +144,6 @@ AUTH_USER_MODEL = 'supplies.Customer'
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0f0f-102-91-92-197.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '1b64-102-91-102-29.ngrok-free.app']
 
 

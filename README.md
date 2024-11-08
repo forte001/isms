@@ -11,7 +11,7 @@ A comprehensive Inventory and Sales Management System built with Django. This sy
 
 ### Sales Management
 - **Sale Transactions**: Products can be sold, and the system tracks sales with all necessary details such as quantity sold, total price, and date.
-- **Customer Purchase History**: Customers can view all their past purchases from their account dashboard.
+- **Customer Purchase History**: Customers can view all their past purchases from their account dashboard and download receipt of purchase with QR code embedded.
 - **Payment Integration**: Integrated with PayStack for seamless online payments. Sales are completed once payment is verified.
   
 ### Supplier Management
