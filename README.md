@@ -44,24 +44,31 @@ A comprehensive Inventory and Sales Management System built with Django. This sy
 
 2. **Create Virtual environment**
 
+    ```bash
     python -m venv venv
 
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 3. **Run Migration**
 
+    ```bash
    python manage.py makemigrations
-   
+
    python manage.py migrate
 
 4. **Create Super User (Optional)**
 
+    ```bash
     python manage.py createsuperuser
+
 
 
 5. **Run development server**
 
+    ```bash
     python manage.py runserver
+
+
 
     Open your browser and go to http://127.0.0.1:8000 to start using the system.
 
