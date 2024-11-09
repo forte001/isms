@@ -93,7 +93,37 @@ class CategoryListView(View):
         all_categories = Category.objects.all()
 
         return render(request, self.template_name, {'all_categories': all_categories})
+    
 
+class UpdateCategoryView(View):
+    template_name = 'supplies/update_category.html'
+
+    def get(self, request, category_id):
+       
+        category = get_object_or_404(Category, id=category_id)
+        return render(request, self.template_name, {'category': category})
+
+    def post(self, request, category_id):
+        
+        category = get_object_or_404(Category, id=category_id)
+        category.cat_name = request.POST.get('cat_name')
+        category.cat_description = request.POST.get('cat_description')
+        category.created_by = request.user
+    
+        category.save()
+
+        return redirect('supplies:category_list')
+
+class DeleteCategoryView(View):
+    def get(self, request, category_id):
+       
+        category = get_object_or_404(Category, id=category_id)
+        return render(request, 'supplies/delete_category.html', {'category': category})
+    def post(self, request, category_id):
+         
+         category = get_object_or_404(Category, id=category_id)
+         category.delete()
+         return redirect('supplies:category_list')
 
     
 

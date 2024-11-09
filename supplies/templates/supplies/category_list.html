@@ -31,7 +31,8 @@
                     <div class="dropdown-container">
                         <button class="dropbtn">Select an Action</button>
                         <div class="dropdown-content">
-                            
+                            <a href="{% url 'supplies:update_category' category.id %}">Update Category</a>
+                            <a href="{% url 'supplies:delete_category' category.id %}">Delete Category</a>
                             
                         </div>
                     </div>
