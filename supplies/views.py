@@ -61,7 +61,43 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
             'total_sales': total_sales,
             'recent_transactions': completed_sales.order_by('-date')[:5],
         })
+
+class CreateCategoryView(View):
+    template_name = 'supplies/create_category.html'
+    def get(self, request):
+        return render(request, self.template_name)
     
+    def post(self, request):
+        cat_name = request.POST.get('cat_name')
+        cat_description = request.POST.get('description')
+        
+
+
+        Category.objects.create(
+            cat_name = cat_name,
+            cat_description = cat_description,
+            created_by = request.user
+
+        )
+
+        return redirect('supplies:category_list')
+    
+
+
+class CategoryListView(View):
+
+    template_name = 'supplies/category_list.html'
+
+    def get(self,request):
+
+        all_categories = Category.objects.all()
+
+        return render(request, self.template_name, {'all_categories': all_categories})
+
+
+    
+
+
 @method_decorator(login_required, name='dispatch')
 class ProductListView(View):
     template_name = 'supplies/product_list.html'
@@ -452,10 +488,10 @@ class AllSalesView(View):
     template_name = 'supplies/all_sales.html'
 
     def get(self, request):
-        all_sales = Sale.objects.filter(payment__status='completed')
+        all_sales = Sale.objects.filter(payment__status='completed').order_by('-date')
 
         # Paginate sales (10 sales per page)
-        paginator = Paginator(all_sales, 15)  # Show 20 sales per page
+        paginator = Paginator(all_sales, 15)  # Show 15 sales per page
         page_number = request.GET.get('page')  # Get the page number from the request
         page_obj = paginator.get_page(page_number)
 

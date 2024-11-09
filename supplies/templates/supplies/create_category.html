@@ -1,0 +1,18 @@
+{% extends "supplies/base_user.html" %}
+{% block title %}Create Category{% endblock %}
+{% block content %}
+<h2>Create New Category</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <label class="label" for="product_name">Category Name:</label>
+        <input class="input-text" type="text" id="product_name" name="cat_name" required>
+
+        <label class="label" for="description">Description:</label>
+        <Textarea class="input-text" name="description" id="description"></Textarea>
+
+        <button class="btn" type="submit">Save Category</button>
+    </form>
+<a href="{% url 'supplies:category_list' %}">Back to Category List</a>
+
+
+{% endblock %}

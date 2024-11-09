@@ -20,6 +20,7 @@
                         
                     {% else %}
                         <li><a href="{% url 'supplies:admin_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'supplies:category_list' %}">Product Categories</a></li>
                         <li><a href="{% url 'supplies:supplier_list' %}">Suppliers</a></li>
                         <li><a href="{% url 'supplies:customer_list' %}">Customers</a></li>
                         <li><a href="{% url 'supplies:all_sales' %}">Sales</a></li>

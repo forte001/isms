@@ -7,6 +7,8 @@ app_name = 'supplies'
 
 urlpatterns = [
     path("admin/dashboard/", DashboardView.as_view(), name="admin_dashboard"),
+    path('category/new/', CreateCategoryView.as_view(), name='create_category'),
+    path('categories/', CategoryListView.as_view(), name='category_list'),
     path("products/", ProductListView.as_view(), name='product_list'),
     path('product/create/', CreateProductView.as_view(), name='create_product'),
     path('product/import/', ImportProductView.as_view(), name='import_products'),

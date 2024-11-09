@@ -1,0 +1,51 @@
+{% extends "supplies/base_user.html" %}
+{% load static %}
+{% block content %}
+
+<h2>Category List</h2>
+
+<div>
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Last Updated</th>
+                
+                <th>Actions</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in all_categories %}
+            <tr>
+                <td><a href="">{{ category.cat_name }}</a></td>
+                <td>{{ category.cat_descroption }}</td>
+                <td>{{ category.created_by }}</td>
+                <td>{{ category.last_updated }}</td>
+                
+                
+                <td>
+                    
+                    <div class="dropdown-container">
+                        <button class="dropbtn">Select an Action</button>
+                        <div class="dropdown-content">
+                            
+                            
+                        </div>
+                    </div>
+
+
+                </td>
+               
+                    
+                   
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'supplies:create_category'%}">Create Category</a>
+</div>
+{% endblock %}
